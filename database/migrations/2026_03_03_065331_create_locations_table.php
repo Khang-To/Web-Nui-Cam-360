@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('locations', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('image_path'); // ảnh đại diện
-            $table->text('short_description')->nullable();
-            $table->longText('content')->nullable();
+            $table->string('image_path')->nullable(); // ảnh đại diện
+            $table->text('short_description');
+            $table->longText('content');
             $table->timestamps();
         });
     }

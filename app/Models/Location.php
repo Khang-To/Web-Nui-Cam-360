@@ -21,4 +21,14 @@ class Location extends Model
     {
         return $this->hasMany(TouristObject::class);
     }
+
+    // Accessor để lấy URL của ảnh
+    public function getImageUrlAttribute()
+    {
+        if ($this->image_path && file_exists(public_path('storage/' . $this->image_path))) {
+            return asset('storage/' . $this->image_path);
+        }
+
+        return asset('images/no-image.jpg');
+    }
 }
