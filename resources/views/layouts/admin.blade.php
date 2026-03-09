@@ -14,6 +14,16 @@
     <link rel="stylesheet" href="{{ asset('admin-assets/css/toast.css') }}">
 
     @stack('styles')
+    <style>
+        .footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            padding: 1rem 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -21,7 +31,7 @@
         <nav id="sidebar" class="sidebar js-sidebar">
             <div class="sidebar-content js-simplebar">
                 <a class="sidebar-brand text-decoration-none" href="{{ route('admin.dashboard') }}">
-                    <span class="align-middle">Mai Tùng House</span>
+                    <span class="align-middle">Núi Cấm 360</span>
                 </a>
 
                 <ul class="sidebar-nav">
@@ -30,7 +40,7 @@
                     </li>
 
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="#">
+                        <a class="sidebar-link" href="{{ route('admin.dashboard') }}">
                             <i class="align-middle me-2" data-feather="pie-chart"></i>
                             <span class="align-middle">Bảng điều khiển</span>
                         </a>
@@ -48,8 +58,8 @@
                     </li>
 
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="#">
-                            <i class="align-middle me-2" data-feather="layers"></i>
+                        <a class="sidebar-link" href="{{ route('admin.tourist_objects.index') }}">
+                            <i class="align-middle me-2 bi bi-star-fill"></i>
                             <span class="align-middle">Quản lý đối tượng tham quan</span>
                         </a>
                     </li>
@@ -80,18 +90,25 @@
                             <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#"
                                 data-bs-toggle="dropdown">
                                 <span class="text-dark">
-                                    {{ Auth::check() ? Auth::user()->username : 'Admin Mai Tùng' }}
+                                    {{ Auth::user()->username }}
                                 </span>
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a class="dropdown-item" href="#">
-                                    <i class="bi bi-person me-2"></i> Hồ sơ cá nhân
+                                <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
+                                    <i class="bi bi-house me-2"></i> Bảng điều khiển
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">
-                                    <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
+                                <a class="dropdown-item" href="{{ route('admin.change-password') }}">
+                                    <i class="bi bi-key me-2"></i> Đổi mật khẩu
                                 </a>
+                                <div class="dropdown-divider"></div>
+                                <form method="POST" action="{{ route('admin.logout') }}" class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
+                                    </button>
+                                </form>
                             </div>
                         </li>
                     </ul>

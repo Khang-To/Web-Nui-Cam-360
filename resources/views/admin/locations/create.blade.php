@@ -20,9 +20,12 @@
             <label class="form-label fw-semibold">Tên địa điểm <span class="text-danger">*</span></label>
             <input type="text"
                    name="name"
-                   class="form-control"
+                   class="form-control @error('name') is-invalid @enderror"
                    value="{{ old('name') }}"
-                   >
+                   placeholder="VD: Chùa Phật Lớn, Điện Bồ Hong...">
+            @error('name')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
         </div>
 
         {{-- Ảnh đại diện --}}
@@ -30,7 +33,7 @@
             <label class="form-label fw-semibold">Ảnh đại diện</label>
             <input type="file"
                    name="image"
-                   class="form-control"
+                   class="form-control @error('image') is-invalid @enderror"
                    accept="image/*"
                    onchange="previewImage(event)">
 
@@ -40,22 +43,32 @@
                      width="200"
                      class="img-thumbnail">
             </div>
+            @error('image')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
         </div>
 
         {{-- Mô tả ngắn --}}
         <div class="mb-3">
             <label class="form-label fw-semibold">Mô tả ngắn <span class="text-danger">*</span></label>
             <textarea name="short_description"
-                      class="form-control"
-                      rows="3">{{ old('short_description') }}</textarea>
+                      class="form-control @error('short_description') is-invalid @enderror"
+                      rows="3"
+                      placeholder="Nhập mô tả ngắn...">{{ old('short_description') }}</textarea>
+            @error('short_description')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
         </div>
 
         {{-- Nội dung chi tiết --}}
         <div class="mb-3">
             <label class="form-label fw-semibold">Nội dung chi tiết <span class="text-danger">*</span></label>
-            <textarea name="content" id="editor">
-                {{ old('content') }}
-            </textarea>
+            <textarea name="content"
+                      id="editor"
+                      class="form-control @error('content') is-invalid @enderror">{{ old('content') }}</textarea>
+            @error('content')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
         </div>
 
         <button type="submit" class="btn btn-primary">
@@ -63,7 +76,7 @@
         </button>
 
         <a href="{{ route('admin.locations.index') }}"
-           class="btn btn-secondary">Quay lại</a>
+           class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Quay lại</a>
 
     </form>
 

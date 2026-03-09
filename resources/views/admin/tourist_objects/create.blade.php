@@ -1,30 +1,46 @@
 @extends('layouts.admin')
 
-@section('title', 'Sửa địa điểm')
+@section('title', 'Thêm đối tượng du lịch')
 
 @section('content')
 <div class="container-fluid mt-4">
 
-    <h3 class="text-warning mb-4">
-        <i class="bi bi-pencil-square"></i> Sửa thông tin địa điểm du lịch
+    <h3 class="text-primary mb-4">
+        <i class="bi bi-plus-circle"></i> Thêm đối tượng du lịch
     </h3>
 
-    <form action="{{ route('admin.locations.update', $location) }}"
+    <form action="{{ route('admin.tourist_objects.store') }}"
           method="POST"
           enctype="multipart/form-data">
 
         @csrf
-        @method('PUT')
 
-        {{-- Tên địa điểm --}}
+        {{-- Tên đối tượng --}}
         <div class="mb-3">
-            <label class="form-label fw-semibold">Tên địa điểm <span class="text-danger">*</span></label>
+            <label class="form-label fw-semibold">Tên đối tượng du lịch <span class="text-danger">*</span></label>
             <input type="text"
                    name="name"
                    class="form-control @error('name') is-invalid @enderror"
-                   value="{{ old('name', $location->name) }}"
-                   placeholder="VD: Hà Nội, Sapa...">
+                   value="{{ old('name') }}"
+                   placeholder="VD: Nhà thờ Đức Bà">
             @error('name')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        {{-- Địa điểm --}}
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Địa điểm <span class="text-danger">*</span></label>
+            <select name="location_id"
+                    class="form-control @error('location_id') is-invalid @enderror">
+                <option value="">-- Chọn địa điểm --</option>
+                @foreach($locations as $location)
+                    <option value="{{ $location->id }}" @selected(old('location_id') == $location->id)>
+                        {{ $location->name }}
+                    </option>
+                @endforeach
+            </select>
+            @error('location_id')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
@@ -40,7 +56,7 @@
 
             <div class="mt-3">
                 <img id="preview"
-                     src="{{ $location->image_url ?? asset('images/no-image.jpg') }}"
+                     src="{{ asset('images/no-image.jpg') }}"
                      width="200"
                      class="img-thumbnail">
             </div>
@@ -49,25 +65,13 @@
             @enderror
         </div>
 
-        {{-- Mô tả ngắn --}}
+        {{-- Mô tả --}}
         <div class="mb-3">
-            <label class="form-label fw-semibold">Mô tả ngắn <span class="text-danger">*</span></label>
-            <textarea name="short_description"
-                      class="form-control @error('short_description') is-invalid @enderror"
-                      rows="3"
-                      placeholder="Nhập mô tả ngắn...">{{ old('short_description', $location->short_description) }}</textarea>
-            @error('short_description')
-                <div class="invalid-feedback d-block">{{ $message }}</div>
-            @enderror
-        </div>
-
-        {{-- Nội dung chi tiết --}}
-        <div class="mb-3">
-            <label class="form-label fw-semibold">Nội dung chi tiết <span class="text-danger">*</span></label>
-            <textarea name="content"
+            <label class="form-label fw-semibold">Mô tả chi tiết <span class="text-danger">*</span></label>
+            <textarea name="description"
                       id="editor"
-                      class="form-control @error('content') is-invalid @enderror">{{ old('content', $location->content) }}</textarea>
-            @error('content')
+                      class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
+            @error('description')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
             @enderror
         </div>
@@ -76,8 +80,8 @@
             <i class="bi bi-save"></i> Lưu lại
         </button>
 
-        <a href="{{ route('admin.locations.index') }}"
-           class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Quay lại</a>
+        <a href="{{ route('admin.tourist_objects.index') }}"
+           class="btn btn-secondary">Quay lại</a>
 
     </form>
 
