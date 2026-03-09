@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Quản lý địa điểm')
+@section('title', 'Quản lý đối tượng du lịch')
 
 @section('content')
 <div class="container-fluid mt-4">
@@ -8,26 +8,37 @@
     {{-- Tiêu đề + nút thêm --}}
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="text-primary">
-            <i class="bi bi-geo-alt-fill"></i> Quản lý địa điểm du lịch
+            <i class="bi bi-star-fill"></i> Quản lý đối tượng du lịch
         </h3>
 
-        <a href="{{ route('admin.locations.create') }}"
+        <a href="{{ route('admin.tourist_objects.create') }}"
            class="btn btn-primary">
-            Thêm địa điểm
+            Thêm đối tượng du lịch
         </a>
     </div>
 
     {{-- Tìm kiếm --}}
     <form method="GET"
-          action="{{ route('admin.locations.index') }}"
+          action="{{ route('admin.tourist_objects.index') }}"
           class="row mb-3">
 
-        <div class="col-md-4">
+        <div class="col-md-3">
             <input type="text"
                    name="keyword"
                    value="{{ request('keyword') }}"
                    class="form-control"
-                   placeholder="Tìm theo tên địa điểm...">
+                   placeholder="Tìm theo tên...">
+        </div>
+
+        <div class="col-md-3">
+            <select name="location_id" class="form-control">
+                <option value="">-- Chọn địa điểm --</option>
+                @foreach($locations as $location)
+                    <option value="{{ $location->id }}" @selected(request('location_id') == $location->id)>
+                        {{ $location->name }}
+                    </option>
+                @endforeach
+            </select>
         </div>
 
         <div class="col-md-2">
@@ -37,7 +48,7 @@
         </div>
 
         <div class="col-md-2">
-            <a href="{{ route('admin.locations.index') }}"
+            <a href="{{ route('admin.tourist_objects.index') }}"
                class="btn btn-secondary w-100">
                 Reset
             </a>
@@ -50,36 +61,43 @@
         <thead class="table-primary">
             <tr>
                 <th width="120">Hình ảnh</th>
-                <th>Tên địa điểm</th>
-                <th>Mô tả ngắn</th>
-                <th width="180" class="text-center">Hành động</th>
+                <th>Tên đối tượng</th>
+                <th>Địa điểm</th>
+                <th>Mô tả</th>
+                <th width="200" class="text-center">Hành động</th>
             </tr>
         </thead>
 
         <tbody>
-            @forelse($locations as $location)
+            @forelse($touristObjects as $obj)
                 <tr>
                     <td>
-                        <img src="{{ $location->image_url }}"
+                        <img src="{{ $obj->image_url ?? asset('images/no-image.jpg') }}"
                              width="100"
                              class="img-thumbnail">
                     </td>
 
                     <td class="fw-semibold text-primary">
-                        {{ $location->name }}
+                        {{ $obj->name }}
                     </td>
 
                     <td>
-                        {{ \Illuminate\Support\Str::limit($location->short_description, 80) }}
+                        <span class="badge bg-info">
+                            {{ $obj->location->name }}
+                        </span>
+                    </td>
+
+                    <td>
+                        {!! \Illuminate\Support\Str::limit($obj->description, 60) !!}
                     </td>
 
                     <td class="text-center">
-                        <a href="{{ route('admin.locations.edit', $location) }}"
+                        <a href="{{ route('admin.tourist_objects.edit', $obj) }}"
                            class="btn btn-sm btn-warning">
                             <i class="bi bi-pencil"></i> Sửa
                         </a>
 
-                        <form action="{{ route('admin.locations.destroy', $location) }}"
+                        <form action="{{ route('admin.tourist_objects.destroy', $obj) }}"
                               method="POST"
                               class="d-inline"
                               onsubmit="return confirm('Bạn có chắc muốn xóa?')">
@@ -96,7 +114,7 @@
                 <tr>
                     <td colspan="5"
                         class="text-center text-muted py-3">
-                        Không tìm thấy địa điểm
+                        Không tìm thấy đối tượng du lịch
                     </td>
                 </tr>
             @endforelse
@@ -105,7 +123,7 @@
 
     {{-- Phân trang --}}
     <div class="mt-3">
-        {{ $locations->links() }}
+        {{ $touristObjects->links() }}
     </div>
 
 </div>

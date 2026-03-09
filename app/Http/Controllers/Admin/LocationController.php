@@ -56,6 +56,14 @@ class LocationController extends Controller
     }
 
     /**
+     * Hiển thị chi tiết
+     */
+    public function show(Location $location)
+    {
+        return view('admin.locations.show', compact('location'));
+    }
+
+    /**
      * Lưu mới
      */
     public function store(Request $request)
