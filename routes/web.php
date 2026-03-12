@@ -3,11 +3,32 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\Admin\SceneController;
 use App\Http\Controllers\Admin\TouristObjectController;
+use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\Client\LocationController as ClientLocationController; // Thêm alias để tránh trùng tên với LocationController của admin
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// ==========================================
+// ROUTES CHO GIAO DIỆN NGƯỜI DÙNG (CLIENT)
+// ==========================================
+
+// Gọi thẳng vào hàm index của HomeController
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// ĐÃ THÊM: Route trỏ về trang Giới thiệu
+Route::get('/gioi-thieu', function () {
+    return view('client.about');
+})->name('about');
+
+// Route Trang Danh sách Thắng cảnh
+Route::get('/danh-thang', [ClientLocationController::class, 'index'])->name('client.location.index');
+
+// Route Trang Chi tiết Thắng cảnh
+Route::get('/danh-thang/{id}', [ClientLocationController::class, 'detail'])->name('client.location.detail');
+
+// ==========================================
+// ROUTES CHO TRANG QUẢN TRỊ (ADMIN)
+// ==========================================
 
 // Routes không cần đăng nhập
 Route::get('/admin/login', [AuthController::class, 'showLoginForm'])->name('admin.login');
@@ -29,6 +50,12 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     // Quản lý đối tượng du lịch
     Route::resource('tourist_objects', TouristObjectController::class);
+
+    // Quản lý scene panorama
+    Route::resource('scenes', SceneController::class);
+    // placeholder route for hotspot configuration
+    Route::get('scenes/{scene}/hotspots', [SceneController::class, 'hotspots'])
+        ->name('scenes.hotspots');
 });
 
 Route::post('/admin/upload-editor-image',

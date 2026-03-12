@@ -23,7 +23,7 @@
                    name="name"
                    class="form-control @error('name') is-invalid @enderror"
                    value="{{ old('name', $location->name) }}"
-                   placeholder="VD: Hà Nội, Sapa...">
+                   placeholder="VD: Chùa Phật Lớn, Điện Bồ Hong...">
             @error('name')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror

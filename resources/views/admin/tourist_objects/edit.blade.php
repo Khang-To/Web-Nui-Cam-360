@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 
-@section('title', 'Sửa đối tượng du lịch')
+@section('title', 'Sửa đối tượng tham quan')
 
 @section('content')
 <div class="container-fluid mt-4">
 
     <h3 class="text-warning mb-4">
-        <i class="bi bi-pencil-square"></i> Sửa thông tin đối tượng du lịch
+        <i class="bi bi-pencil-square"></i> Sửa thông tin đối tượng tham quan
     </h3>
 
     <form action="{{ route('admin.tourist_objects.update', $touristObject) }}"
@@ -18,12 +18,12 @@
 
         {{-- Tên đối tượng --}}
         <div class="mb-3">
-            <label class="form-label fw-semibold">Tên đối tượng du lịch <span class="text-danger">*</span></label>
+            <label class="form-label fw-semibold">Tên đối tượng tham quan <span class="text-danger">*</span></label>
             <input type="text"
                    name="name"
                    class="form-control @error('name') is-invalid @enderror"
                    value="{{ old('name', $touristObject->name) }}"
-                   placeholder="VD: Nhà thờ Đức Bà">
+                   placeholder="VD: Tượng phật Di Lặc, Hồ Thủy Liêm...">
             @error('name')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror

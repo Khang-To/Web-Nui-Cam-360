@@ -41,6 +41,29 @@ class TouristObjectController extends Controller
     }
 
     /**
+     * Hàm hỗ trợ bóc tách đường dẫn ảnh từ nội dung HTML (TinyMCE)
+     */
+    private function extractEditorImagePaths($content)
+    {
+        if (!$content) return [];
+
+        preg_match_all('/<img[^>]+src="([^">]+)"/i', $content, $matches);
+        $urls = $matches[1] ?? [];
+        $paths = [];
+
+        foreach ($urls as $url) {
+            // Cắt lấy đường dẫn chuẩn phía sau chữ '/storage/'
+            if (($pos = strpos($url, '/storage/')) !== false) {
+                $path = substr($url, $pos + strlen('/storage/'));
+                $path = explode('?', $path)[0]; // Bỏ query string nếu có
+                $paths[] = $path;
+            }
+        }
+
+        return $paths;
+    }
+
+    /**
      * Form thêm mới
      */
     public function create()
@@ -112,6 +135,12 @@ class TouristObjectController extends Controller
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
             'description' => 'required|string',
             'location_id' => 'required|exists:locations,id',
+        ], [
+            'name.required' => 'Bạn chưa nhập tên đối tượng du lịch.',
+            'description.required' => 'Bạn chưa nhập mô tả.',
+            'location_id.required' => 'Bạn chưa chọn địa điểm.',
+            'location_id.exists' => 'Địa điểm không tồn tại.',
+            'image.image' => 'File tải lên phải là hình ảnh.',
         ]);
 
         $data = [
@@ -120,9 +149,8 @@ class TouristObjectController extends Controller
             'location_id' => $request->location_id,
         ];
 
-        // Xử lý ảnh
+        // 1. CẬP NHẬT ẢNH ĐẠI DIỆN
         if ($request->hasFile('image')) {
-            // Xóa ảnh cũ nếu tồn tại
             if (
                 $touristObject->image_path &&
                 Storage::disk('public')->exists($touristObject->image_path)
@@ -130,9 +158,21 @@ class TouristObjectController extends Controller
                 Storage::disk('public')->delete($touristObject->image_path);
             }
 
-            // Lưu ảnh mới
             $data['image_path'] = $request->file('image')
                 ->store('tourist_objects', 'public');
+        }
+
+        // 2. DỌN RÁC ẢNH TINYMCE TRONG DESCRIPTION BỊ XÓA
+        $oldEditorImages = $this->extractEditorImagePaths($touristObject->description);
+        $newEditorImages = $this->extractEditorImagePaths($request->description);
+
+        // Tìm các ảnh dư thừa
+        $imagesToDelete = array_diff($oldEditorImages, $newEditorImages);
+
+        foreach ($imagesToDelete as $path) {
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
         }
 
         $touristObject->update($data);
@@ -146,7 +186,7 @@ class TouristObjectController extends Controller
      */
     public function destroy(TouristObject $touristObject)
     {
-        // Xóa ảnh nếu tồn tại
+        // 1. XÓA ẢNH ĐẠI DIỆN TRONG STORAGE
         if (
             $touristObject->image_path &&
             Storage::disk('public')->exists($touristObject->image_path)
@@ -154,6 +194,16 @@ class TouristObjectController extends Controller
             Storage::disk('public')->delete($touristObject->image_path);
         }
 
+        // 2. BÓC TÁCH VÀ XÓA ẢNH TINYMCE TRONG DESCRIPTION
+        $editorImages = $this->extractEditorImagePaths($touristObject->description);
+
+        foreach ($editorImages as $path) {
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+
+        // 3. XÓA DỮ LIỆU
         $touristObject->delete();
 
         return redirect()->route('admin.tourist_objects.index')
