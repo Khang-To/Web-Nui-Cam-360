@@ -22,6 +22,15 @@ class Hotspot extends Model
         'tourist_object_id',
     ];
 
+    protected $casts = [
+        'yaw' => 'float',
+        'pitch' => 'float',
+        'rotation' => 'float',
+        'target_yaw' => 'float',
+        'target_pitch' => 'float',
+        'target_fov' => 'float',
+    ];
+
     // hotspot thuộc về một scene
     public function scene()
     {

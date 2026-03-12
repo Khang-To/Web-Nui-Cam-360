@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Quản lý đối tượng du lịch')
+@section('title', 'Quản lý đối tượng tham quan')
 
 @section('content')
 <div class="container-fluid mt-4">
@@ -8,12 +8,12 @@
     {{-- Tiêu đề + nút thêm --}}
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="text-primary">
-            <i class="bi bi-star-fill"></i> Quản lý đối tượng du lịch
+            <i class="bi bi-star-fill"></i> Quản lý đối tượng tham quan
         </h3>
 
         <a href="{{ route('admin.tourist_objects.create') }}"
            class="btn btn-primary">
-            Thêm đối tượng du lịch
+            Thêm đối tượng tham quan
         </a>
     </div>
 
@@ -114,7 +114,7 @@
                 <tr>
                     <td colspan="5"
                         class="text-center text-muted py-3">
-                        Không tìm thấy đối tượng du lịch
+                        Không tìm thấy đối tượng tham quan
                     </td>
                 </tr>
             @endforelse

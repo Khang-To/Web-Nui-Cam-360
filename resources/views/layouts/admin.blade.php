@@ -69,9 +69,9 @@
                     </li>
 
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="#">
+                        <a class="sidebar-link" href="{{ route('admin.scenes.index') }}">
                             <i class="align-middle me-2" data-feather="aperture"></i>
-                            <span class="align-middle">Cấu hình tour 360</span>
+                            <span class="align-middle">Cấu hình tour 360°</span>
                         </a>
                     </li>
                 </ul>
@@ -90,7 +90,8 @@
                             <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#"
                                 data-bs-toggle="dropdown">
                                 <span class="text-dark">
-                                    {{ Auth::user()->username }}
+                                    <i class="bi bi-person-circle me-1"></i>
+                                    Xin chào quản trị viên!
                                 </span>
                             </a>
 

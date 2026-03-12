@@ -84,7 +84,7 @@ class AuthController extends Controller
         }
 
         User::where('id', Auth::id())->update([
-            'password' => $request->password,
+            'password' => Hash::make($request->password),
         ]);
 
         Auth::logout();

@@ -22,7 +22,7 @@
                    name="name"
                    class="form-control @error('name') is-invalid @enderror"
                    value="{{ old('name') }}"
-                   placeholder="VD: Nhà thờ Đức Bà">
+                   placeholder="VD: Tượng phật Di Lặc, Hồ Thủy Liêm...">
             @error('name')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
