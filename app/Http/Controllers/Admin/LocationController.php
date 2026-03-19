@@ -202,7 +202,7 @@ class LocationController extends Controller
             Storage::disk('public')->delete($location->image_path);
         }
 
-        // 2. BÓC TÁCH VÀ XÓA TẤT CẢ ẢNH TINYMCE NẰM TRONG CỘT 'CONTENT'
+        // 2. BÓC TÁCH VÀ XÓA TẤT CẢ ẢNH TINYMCE NẰM TRONG CONTENT
         $editorImages = $this->extractEditorImagePaths($location->content);
 
         foreach ($editorImages as $path) {
@@ -211,7 +211,27 @@ class LocationController extends Controller
             }
         }
 
-        // 3. CUỐI CÙNG MỚI XÓA DÒNG DỮ LIỆU TRONG DATABASE
+        // 3. XÓA TẤT CẢ ĐỐI TƯỢNG DU LỊCH THUỘC ĐỊA ĐIỂM NÀY
+        foreach ($location->touristObjects as $object) {
+
+            // Xóa ảnh đại diện
+            if ($object->image_path && Storage::disk('public')->exists($object->image_path)) {
+                Storage::disk('public')->delete($object->image_path);
+            }
+
+            // Xóa ảnh TinyMCE trong description
+            $editorImages = $this->extractEditorImagePaths($object->description);
+
+            foreach ($editorImages as $path) {
+                if (Storage::disk('public')->exists($path)) {
+                    Storage::disk('public')->delete($path);
+                }
+            }
+
+            $object->delete();
+        }
+
+        // 4. CUỐI CÙNG MỚI XÓA DÒNG DỮ LIỆU TRONG DATABASE
         $location->delete();
 
         return redirect()->route('admin.locations.index')

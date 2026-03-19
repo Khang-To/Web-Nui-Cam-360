@@ -3,7 +3,7 @@
 @section('title', 'Khám phá Danh thắng - Mai Tùng House')
 
 @section('content')
-<section class="d-flex align-items-center" style="height: 40vh; min-height: 300px; background: linear-gradient(rgba(27, 94, 32, 0.8), rgba(0, 0, 0, 0.5)), url('/images/hero-background/danh-thang-banner.jpg') center/cover no-repeat; margin-top: 0;">
+<section class="d-flex align-items-center" style="height: 50vh; min-height: 400px; background: linear-gradient(rgba(27, 94, 32, 0.8), rgba(0, 0, 0, 0.5)), url('/images/hero-background/danh-thang-banner.jpg') center/cover no-repeat; margin-top: 0;">
   <div class="container text-center pt-5">
     <span class="text-uppercase fw-bold text-warning mb-2 d-block" style="letter-spacing: 2px;" data-aos="fade-down">Điểm Đến</span>
     <h1 class="display-4 fw-bold text-white mb-3" data-aos="fade-up" data-aos-delay="100">Khám Phá Danh Thắng</h1>

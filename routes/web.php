@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\SceneController;
 use App\Http\Controllers\Admin\TouristObjectController;
+use App\Http\Controllers\Admin\HotspotController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\LocationController as ClientLocationController; // Thêm alias để tránh trùng tên với LocationController của admin
 
@@ -53,11 +54,25 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     // Quản lý scene panorama
     Route::resource('scenes', SceneController::class);
-    // placeholder route for hotspot configuration
-    Route::get('scenes/{scene}/hotspots', [SceneController::class, 'hotspots'])
-        ->name('scenes.hotspots');
+
+    // Thêm route để quản lý hotspot của scene
+    Route::get(
+        'scenes/{scene}/hotspots',
+        [SceneController::class, 'hotspots']
+    )->name('scenes.hotspots');
+
+    // Thêm route để cập nhật góc nhìn ban đầu của scene
+    Route::post(
+        'scenes/{scene}/set-initial-view',
+        [SceneController::class, 'setInitialView']
+    )->name('scenes.setInitialView');
+
+    Route::post('/hotspots', [HotspotController::class, 'store']);
+    Route::put('/hotspots/{hotspot}', [HotspotController::class, 'update']);
+    Route::delete('/hotspots/{hotspot}', [HotspotController::class, 'destroy']);
 });
 
-Route::post('/admin/upload-editor-image',
+Route::post(
+    '/admin/upload-editor-image',
     [LocationController::class, 'uploadEditorImage']
 )->name('admin.upload.editor.image');

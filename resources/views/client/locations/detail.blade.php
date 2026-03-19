@@ -9,6 +9,7 @@
                             url('{{ $location->image_url }}') center/cover no-repeat;
                 margin-top: 0;">
     <div class="container text-center pt-5">
+        <span class="text-uppercase fw-bold text-warning mb-2 d-block" style="letter-spacing: 2px;" data-aos="fade-down">Danh thắng</span>
         <h1 class="display-5 fw-bold text-white mb-3" data-aos="fade-up">{{ $location->name }}</h1>
     </div>
 </section>
