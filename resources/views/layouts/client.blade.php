@@ -14,6 +14,8 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <link href="{{ asset('client-assets/css/client-home.css') }}" rel="stylesheet">
+
+    @stack('styles')
 </head>
 
 <body>
@@ -34,14 +36,15 @@
                             href="{{ route('home') }}">Trang chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}"
-                            href="{{ route('about') }}">Giới thiệu</a>
+                        <a class="nav-link {{ request()->routeIs('client.about') ? 'active' : '' }}"
+                            href="{{ route('client.about') }}">Giới thiệu</a>
                     </li>
-                    <li class="nav-item"><a
-                            class="nav-link {{ request()->routeIs('client.location.*') ? 'active' : '' }}"
-                            href="{{ route('client.location.index') }}">Danh thắng</a>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('client.location.*') ? 'active' : '' }}"
+                            href="{{ route('client.location.index') }}">Điểm đến</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('home') }}#360-tour">Tour 360°</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('client.virtualtour.*') ? 'active' : '' }}"
+                            href="{{ route('client.virtualtour.index') }}">Tour 360°</a></li>
 
                     <li class="nav-item ms-lg-3 mt-3 mt-lg-0 mb-3 mb-lg-0">
                         <a class="nav-social-icon" href="https://www.facebook.com/thaoduoctutam2288/" target="_blank"
@@ -70,9 +73,9 @@
                     <h5 class="fw-bold">Liên kết nhanh</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="{{ route('home') }}">Trang chủ</a></li>
-                        <li class="mb-2"><a href="{{ route('about') }}">Về Mai Tùng</a></li>
-                        <li class="mb-2"><a href="{{ route('client.location.index') }}">Danh thắng</a></li>
-                        <li class="mb-2"><a href="{{ route('home') }}#360-tour">Trải nghiệm VR 360°</a></li>
+                        <li class="mb-2"><a href="{{ route('client.about') }}">Về Mai Tùng</a></li>
+                        <li class="mb-2"><a href="{{ route('client.location.index') }}">Điểm tham quan</a></li>
+                        <li class="mb-2"><a href="{{ route('client.virtualtour.index') }}">Trải nghiệm VR 360°</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-4 mb-4 text-center text-lg-start">
@@ -99,6 +102,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="{{ asset('client-assets/js/client-home.js') }}"></script>
+
+    @stack('scripts')
 </body>
 
 </html>

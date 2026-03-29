@@ -3,7 +3,18 @@
 @section('title', 'Mai Tùng House - Núi Cấm An Giang | Trang Chủ')
 
 @section('content')
-    <section id="home" class="hero d-flex align-items-center">
+
+    @php
+        // Thiết lập hình nền mặc định cho trang chủ
+        $heroBg = '/images/hero-background/banner-khu-du-lich-nui-cam.jpg';
+
+        // Ghi đè hình nền nếu admin có up Banner
+        if(isset($bannerHome) && $bannerHome) {
+            $heroBg = asset('storage/' . $bannerHome->image_path);
+        }
+    @endphp
+
+    <section id="home" class="hero d-flex align-items-center" style="background: linear-gradient(rgba(27, 94, 32, 0.6), rgba(0, 0, 0, 0.7)), url('{{ $heroBg }}') center/cover no-repeat fixed;">
         <div class="container text-center">
             <h1 class="display-3 fw-bold mb-4" data-aos="fade-up">Bình Yên Giữa Đại Ngàn Thiên Cấm Sơn</h1>
             <p class="lead fs-5 mb-5 mx-auto" style="max-width: 700px;" data-aos="fade-up" data-aos-delay="200">
@@ -12,7 +23,7 @@
             </p>
             <div class="d-flex gap-3 justify-content-center" data-aos="fade-up" data-aos-delay="400">
                 <a href="#danh-thang" class="btn btn-accent">Khám phá ngay</a>
-                <a href="#360-tour" class="btn btn-outline-light"><i class="fas fa-vr-cardboard me-2"></i>Xem Tour 360°</a>
+                <a href="{{ route('client.virtualtour.index') }}" class="btn btn-outline-light"><i class="fas fa-vr-cardboard me-2"></i>Xem Tour 360°</a>
             </div>
         </div>
     </section>
@@ -72,7 +83,7 @@
                             và Chùa Vạn Linh ngay tại nhà với công nghệ thực tế ảo tương tác toàn cảnh.</p>
                     </div>
                     <div class="col-lg-4 text-lg-end">
-                        <a href="#" class="btn btn-light btn-lg text-success fw-bold px-4 rounded-pill shadow">
+                        <a href="{{ route('client.virtualtour.index') }}" class="btn btn-light btn-lg text-success fw-bold px-4 rounded-pill shadow">
                             Trải Nghiệm Ngay <i class="fas fa-arrow-right ms-2"></i>
                         </a>
                     </div>
@@ -124,94 +135,58 @@
             <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="200">
                 <div class="col-lg-10">
 
-                    <div id="galleryCarousel" class="carousel slide shadow-lg rounded-4 overflow-hidden"
-                        data-bs-ride="carousel" data-bs-interval="4000">
+                    @if (isset($carousels) && $carousels->count() > 0)
+                        <div id="galleryCarousel" class="carousel slide shadow-lg rounded-4 overflow-hidden"
+                            data-bs-ride="carousel" data-bs-interval="4000">
 
-                        <!-- Indicators -->
-                        <div class="carousel-indicators">
-                            <button type="button" data-bs-target="#galleryCarousel" data-bs-slide-to="0"
-                                class="active"></button>
-                            <button type="button" data-bs-target="#galleryCarousel" data-bs-slide-to="1"></button>
-                            <button type="button" data-bs-target="#galleryCarousel" data-bs-slide-to="2"></button>
-                            <button type="button" data-bs-target="#galleryCarousel" data-bs-slide-to="3"></button>
-                            <button type="button" data-bs-target="#galleryCarousel" data-bs-slide-to="4"></button>
-                        </div>
-
-                        <!-- Slides -->
-                        <div class="carousel-inner">
-
-                            <!-- Slide 1 -->
-                            <div class="carousel-item active">
-                                <img src="/images/carosel/carosel-1.jpg" class="d-block w-100"
-                                    alt="Tượng Phật Di Lặc Núi Cấm">
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5 class="fw-bold text-white mb-1 fs-4">Tượng Phật Di Lặc khổng lồ</h5>
-                                    <p class="text-light mb-0">Biểu tượng linh thiêng của Núi Cấm, nơi mang đến cảm giác
-                                        bình an giữa thiên nhiên hùng vĩ</p>
-                                </div>
+                            <div class="carousel-indicators">
+                                @foreach ($carousels as $index => $slider)
+                                    <button type="button" data-bs-target="#galleryCarousel" data-bs-slide-to="{{ $index }}"
+                                        class="{{ $index == 0 ? 'active' : '' }}"></button>
+                                @endforeach
                             </div>
 
-                            <!-- Slide 2 -->
-                            <div class="carousel-item">
-                                <img src="/images/carosel/carosel-2.jpg" class="d-block w-100" alt="Hồ Thủy Liêm">
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5 class="fw-bold text-white mb-1 fs-4">Hồ Thủy Liêm thơ mộng</h5>
-                                    <p class="text-light mb-0">Mặt hồ tĩnh lặng phản chiếu mây trời giữa lòng Thiên Cấm Sơn
-                                    </p>
-                                </div>
+                            <div class="carousel-inner">
+                                @foreach ($carousels as $index => $slider)
+                                    <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                                        <img src="{{ asset('storage/' . $slider->image_path) }}" class="d-block w-100"
+                                            alt="{{ $slider->title ?? 'Hình ảnh Núi Cấm' }}">
+
+                                        @if ($slider->title || $slider->description)
+                                            <div class="carousel-caption d-none d-md-block">
+                                                @if ($slider->title)
+                                                    <h5 class="fw-bold text-white mb-1 fs-4">{{ $slider->title }}</h5>
+                                                @endif
+                                                @if ($slider->description)
+                                                    <p class="text-light mb-0">{{ $slider->description }}</p>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endforeach
                             </div>
 
-                            <!-- Slide 3 -->
-                            <div class="carousel-item">
-                                <img src="/images/carosel/carosel-3.jpg" class="d-block w-100" alt="Chùa Vạn Linh">
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5 class="fw-bold text-white mb-1 fs-4">Chùa Vạn Linh cổ kính</h5>
-                                    <p class="text-light mb-0">Ngôi chùa thanh tịnh giữa núi rừng, nổi bật với tòa tháp cao
-                                        uy nghi</p>
-                                </div>
-                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel"
+                                data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"
+                                    style="filter: drop-shadow(0 0 5px rgba(0,0,0,0.8));"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
 
-                            <!-- Slide 4 -->
-                            <div class="carousel-item">
-                                <img src="/images/carosel/carosel-4.jpg" class="d-block w-100" alt="Nhà nghỉ Mai Tùng">
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5 class="fw-bold text-white mb-1 fs-4">Nhà nghỉ Mai Tùng</h5>
-                                    <p class="text-light mb-0">Điểm dừng chân lý tưởng để nghỉ ngơi và tận hưởng không khí
-                                        mát lành của Núi Cấm</p>
-                                </div>
-                            </div>
-
-                            <!-- Slide 5 -->
-                            <div class="carousel-item">
-                                <img src="/images/carosel/carosel-5.jpg" class="d-block w-100" alt="Biển mây Núi Cấm">
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5 class="fw-bold text-white mb-1 fs-4">Biển mây huyền ảo</h5>
-                                    <p class="text-light mb-0">Khung cảnh bồng lai tiên cảnh vờn quanh đỉnh núi vào sáng
-                                        sớm</p>
-                                </div>
-                            </div>
+                            <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel"
+                                data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"
+                                    style="filter: drop-shadow(0 0 5px rgba(0,0,0,0.8));"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
 
                         </div>
-
-                        <!-- Prev -->
-                        <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel"
-                            data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"
-                                style="filter: drop-shadow(0 0 5px rgba(0,0,0,0.8));"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-
-                        <!-- Next -->
-                        <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel"
-                            data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"
-                                style="filter: drop-shadow(0 0 5px rgba(0,0,0,0.8));"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-
+                    @else
+                        <div class="text-center p-5 bg-light rounded-4 border">
+                            <p class="text-muted mb-0">Hình ảnh đang được cập nhật...</p>
+                        </div>
+                    @endif
                     </div>
-
-                </div>
             </div>
         </div>
     </section>

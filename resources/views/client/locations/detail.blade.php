@@ -4,12 +4,12 @@
 
 @section('content')
 <section class="d-flex align-items-center justify-content-center"
-         style="height: 50vh; min-height: 400px;
+         style="height: 100%; min-height: 600px;
                 background: linear-gradient(rgba(27, 94, 32, 0.7), rgba(0, 0, 0, 0.6)),
                             url('{{ $location->image_url }}') center/cover no-repeat;
                 margin-top: 0;">
     <div class="container text-center pt-5">
-        <span class="text-uppercase fw-bold text-warning mb-2 d-block" style="letter-spacing: 2px;" data-aos="fade-down">Danh thắng</span>
+        <span class="text-uppercase fw-bold text-warning mb-2 d-block" style="letter-spacing: 2px;" data-aos="fade-down">Điểm đến</span>
         <h1 class="display-5 fw-bold text-white mb-3" data-aos="fade-up">{{ $location->name }}</h1>
     </div>
 </section>

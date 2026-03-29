@@ -1,0 +1,188 @@
+#tour-app {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: black;
+    font-family: Arial, sans-serif;
+}
+
+#pano {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* =========================================
+   HEADER BAR (THANH NGANG CỐ ĐỊNH)
+   ========================================= */
+#topBar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 46px;
+    background: rgba(58, 67, 76, 0.85);
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    z-index: 1001;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.top-left, .top-right-controls {
+    display: flex;
+    align-items: stretch;
+}
+
+/* NÚT TOGGLE MENU (Cố định ở góc trái) */
+#toggleMenuBtn {
+    width: 55px;
+    background-color: rgba(110, 118, 126, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-right: 1px solid rgba(0,0,0,0.3);
+}
+
+#toggleMenuBtn img {
+    width: 24px;
+    filter: brightness(0) invert(1);
+}
+
+#toggleMenuBtn:hover {
+    background-color: rgba(130, 138, 146, 0.9);
+}
+
+/* TÊN CẢNH QUAN */
+#sceneNameBar {
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    color: white;
+    font-size: 15px;
+}
+
+/* CÁC NÚT BÊN PHẢI */
+.btn-top-control {
+    width: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-top-control:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+.btn-top-control img {
+    width: 20px;
+    filter: brightness(0) invert(1);
+}
+
+.btn-top-control i {
+    font-size: 18px;
+}
+
+/* =========================================
+   MENU DROPDOWN TRƯỢT TỪ TRÁI
+   ========================================= */
+#menu {
+    position: absolute;
+    left: 0;
+    top: 46px;
+    width: 280px;
+    height: auto;
+    max-height: calc(100% - 46px); /* Đảm bảo menu ôm trọn nội dung nhưng không dài quá màn hình */
+    background: rgba(58, 67, 76, 0.85);
+    color: white;
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
+}
+
+#menu.closed {
+    transform: translateX(-100%);
+}
+
+#menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+.menu-item-header {
+    padding: 12px 15px;
+    font-size: 16px;
+    background-color: rgba(90, 100, 110, 0.9);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.menu-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    font-size: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.menu-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.menu-item.active {
+    background: rgba(255, 255, 255, 0.2);
+    font-weight: bold;
+}
+
+/* =========================================
+   HOTSPOT
+   ========================================= */
+.hotspot-wrapper {
+    position: relative;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+}
+
+.hotspot-icon {
+    width: 48px;
+    height: 48px;
+    transition: all 0.25s ease;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.6));
+}
+
+.hotspot-wrapper:hover .hotspot-icon {
+    transform: scale(1.18);
+}
+
+.hotspot-tooltip {
+    position: absolute;
+    bottom: 58px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: rgba(0,0,0,0.9);
+    color: white;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.hotspot-wrapper:hover .hotspot-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}

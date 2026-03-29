@@ -14,6 +14,7 @@ function initSceneViewer() {
 
     initDoubleClick();
     initModalEvents();
+    initLocationFilter();
     initSave();
     initDelete();
     initSetInitialView();
@@ -26,7 +27,6 @@ function loadScene(data) {
     const source = Marzipano.ImageUrlSource.fromString(data.image);
     const geometry = new Marzipano.EquirectGeometry([{ width: 4000 }]);
 
-    // GIỚI HẠN ZOOM
     const limiter = Marzipano.RectilinearView.limit.traditional(4000, 120 * Math.PI / 180);
 
     const view = new Marzipano.RectilinearView({
@@ -46,22 +46,16 @@ function loadScene(data) {
 }
 
 /**
- * HÀM PHỤ: GỠ HOTSPOT KHỎI MARZIPANO (FIX LỖI "NO SUCH HOTSPOT")
+ * HÀM PHỤ: GỠ HOTSPOT KHỎI MARZIPANO
  */
 function removeHotspotById(id) {
     let existingWrapper = document.querySelector(`.hotspot-wrapper[data-id="${id}"]`);
     if (existingWrapper) {
-        // 1. Lấy toàn bộ Hotspot Object đang có trong Marzipano
         let hotspotsList = scene.hotspotContainer().listHotspots();
-
-        // 2. Tìm Object nào đang chứa cái thẻ HTML (existingWrapper) này
         let hsObj = hotspotsList.find(h => h.domElement() === existingWrapper);
-
-        // 3. Xóa Object đó
         if (hsObj) {
             scene.hotspotContainer().destroyHotspot(hsObj);
         } else {
-            // Backup an toàn: Nếu Marzipano không quản lý thì cứ ép xóa HTML đi
             existingWrapper.remove();
         }
     }
@@ -75,6 +69,17 @@ function createHotspotElement(h) {
     wrapper.className = "hotspot-wrapper";
     wrapper.setAttribute('data-id', h.id);
 
+    // 1. TẠO TOOLTIP (NHÃN TÊN)
+    let label = document.createElement("span");
+    label.className = "hotspot-label";
+    if (h.type === 'link') {
+        label.innerText = (h.target_scene && h.target_scene.name) ? h.target_scene.name : "Chuyển cảnh";
+    } else {
+        label.innerText = (h.tourist_object && h.tourist_object.name) ? h.tourist_object.name : "Thông tin";
+    }
+    wrapper.appendChild(label);
+
+    // 2. TẠO ICON
     let el = document.createElement("img");
     el.src = h.type === "link" ? "/images/icons/link.png" : "/images/icons/info.png";
     el.className = "hotspot-icon";
@@ -82,7 +87,7 @@ function createHotspotElement(h) {
 
     wrapper.appendChild(el);
 
-    // Sự kiện Click mở Modal Sửa
+    // 3. Sự kiện Click mở Modal Sửa
     wrapper.onclick = function() {
         document.getElementById('hotspot_id').value = h.id;
         document.getElementById('yaw').value = h.yaw;
@@ -97,7 +102,6 @@ function createHotspotElement(h) {
         document.getElementById('target_fov').value = (h.target_fov !== null && h.target_fov !== undefined) ? h.target_fov : "";
 
         document.getElementById('deleteHotspot').style.display = "inline-block";
-
         document.getElementById('type').dispatchEvent(new Event('change'));
         if (h.type === 'link') {
             document.getElementById('icon-preview').style.transform = `rotate(${h.rotation}deg)`;
@@ -227,6 +231,41 @@ function initModalEvents() {
 }
 
 /**
+ * XỬ LÝ LỌC ĐỐI TƯỢNG
+ */
+function initLocationFilter() {
+    const filterLocation = document.getElementById('filter_location_id');
+    const objectSelect = document.getElementById('tourist_object_id');
+
+    if (filterLocation && objectSelect) {
+        // Lưu toàn bộ thẻ option ban đầu
+        const allOptions = Array.from(objectSelect.options);
+
+        filterLocation.addEventListener('change', function () {
+            const selectedLocation = this.value;
+
+            // Xóa sạch danh sách đối tượng
+            objectSelect.innerHTML = '';
+
+            // Lọc và thêm lại
+            allOptions.forEach(option => {
+                if (option.value === "") {
+                    objectSelect.appendChild(option);
+                    return;
+                }
+
+                if (selectedLocation === 'all' || option.getAttribute('data-location') === selectedLocation) {
+                    objectSelect.appendChild(option);
+                }
+            });
+
+            // Nếu người dùng đang tương tác, reset giá trị về rỗng
+            objectSelect.value = "";
+        });
+    }
+}
+
+/**
  * LƯU (AJAX 100% KHÔNG RELOAD)
  */
 function initSave() {
@@ -300,18 +339,35 @@ function initSave() {
                 showToast(id ? "Cập nhật Hotspot thành công!" : "Thêm mới Hotspot thành công!", "success");
                 bootstrap.Modal.getInstance(document.getElementById('hotspotModal')).hide();
 
-                // GỌI HÀM PHỤ ĐỂ XÓA ICON CHUẨN MARZIPANO
+                // LẤY TÊN TỪ THẺ SELECT DROPDOWN NGAY TRÊN MODAL
+                let tsSelect = document.getElementById('target_scene_id');
+                let toSelect = document.getElementById('tourist_object_id');
+                let tsName = targetSceneVal ? tsSelect.options[tsSelect.selectedIndex].text.trim() : null;
+                let toName = touristObjVal ? toSelect.options[toSelect.selectedIndex].text.trim() : null;
+
+                // TẠO OBJECT DỮ LIỆU ĐỂ HÀM CREATE VẼ RA
+                let hData = {
+                    id: id ? id : data.hotspot.id,
+                    type: payloadData.type,
+                    yaw: payloadData.yaw,
+                    pitch: payloadData.pitch,
+                    rotation: payloadData.rotation,
+                    target_scene_id: payloadData.target_scene_id,
+                    tourist_object_id: payloadData.tourist_object_id,
+                    target_yaw: payloadData.target_yaw,
+                    target_pitch: payloadData.target_pitch,
+                    target_fov: payloadData.target_fov,
+                    // Ép dữ liệu ảo để hàm createHotspotElement đọc được ngay tên của Tooltip
+                    target_scene: tsName ? { name: tsName } : null,
+                    tourist_object: toName ? { name: toName } : null
+                };
+
                 if (id) {
                     removeHotspotById(id);
-                    createHotspotElement({
-                        id: id, type: payloadData.type, yaw: payloadData.yaw, pitch: payloadData.pitch,
-                        rotation: payloadData.rotation, target_scene_id: payloadData.target_scene_id,
-                        tourist_object_id: payloadData.tourist_object_id, target_yaw: payloadData.target_yaw,
-                        target_pitch: payloadData.target_pitch, target_fov: payloadData.target_fov
-                    });
-                } else {
-                    createHotspotElement(data.hotspot);
                 }
+
+                // VẼ ICON LÊN CÙNG TOOLTIP MỚI
+                createHotspotElement(hData);
 
             } else {
                 showToast("Lỗi xử lý logic từ máy chủ!", "error");
@@ -351,8 +407,6 @@ function initDelete() {
             if(data.success) {
                 showToast("Đã xóa Hotspot!", "success");
                 bootstrap.Modal.getInstance(document.getElementById('hotspotModal')).hide();
-
-                // GỌI HÀM PHỤ ĐỂ XÓA ICON CHUẨN MARZIPANO
                 removeHotspotById(id);
             } else {
                 showToast("Không thể xóa!", "error");

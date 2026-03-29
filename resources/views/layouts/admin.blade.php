@@ -32,7 +32,7 @@
         <nav id="sidebar" class="sidebar js-sidebar">
             <div class="sidebar-content js-simplebar">
                 <a class="sidebar-brand text-decoration-none" href="{{ route('admin.dashboard') }}">
-                    <span class="align-middle">Núi Cấm 360</span>
+                    <span class="align-middle">Mai Tùng House</span>
                 </a>
 
                 <ul class="sidebar-nav">
@@ -75,6 +75,31 @@
                             <span class="align-middle">Cấu hình tour 360°</span>
                         </a>
                     </li>
+
+                    <li class="sidebar-header text-info">
+                        QUẢN LÝ TRANG WEB
+                    </li>
+
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('admin.web_images.index') }}">
+                            <i class="align-middle me-2 bi bi-images"></i>
+                            <span class="align-middle">Quản lý hình ảnh</span>
+                        </a>
+                    </li>
+
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('admin.reviews.index') }}">
+                            <i class="align-middle me-2 bi bi-chat-left-text"></i>
+                            <span class="align-middle">Đánh giá khách hàng</span>
+                        </a>
+                    </li>
+
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('admin.web_settings.index') }}">
+                            <i class="align-middle me-2 bi bi-gear"></i>
+                            <span class="align-middle">Cấu hình chung</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -88,12 +113,13 @@
                 <div class="navbar-collapse collapse">
                     <ul class="navbar-nav navbar-align">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#"
-                                data-bs-toggle="dropdown">
-                                <span class="text-dark">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <span class="text-dark d-none d-sm-inline">
                                     <i class="bi bi-person-circle me-1"></i>
                                     Xin chào quản trị viên!
                                 </span>
+
+                                <i class="bi bi-person-circle d-inline d-sm-none"></i>
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-end">
@@ -169,7 +195,7 @@
                         <div class="col-6 text-start">
                             <p class="mb-0 mx-auto">
                                 <a class="text-muted" href="#">
-                                    <strong>Mai Tùng House - Virtual Tour</strong>
+                                    <strong>Mai Tùng House - Núi Cấm</strong>
                                 </a>
                             </p>
                         </div>
