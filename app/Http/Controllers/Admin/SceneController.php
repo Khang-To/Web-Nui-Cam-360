@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\TouristObject;
 use App\Models\Hotspot; // 👈 ĐÃ THÊM MODEL HOTSPOT VÀO ĐÂY
+use App\Models\Location;
 use App\Http\Controllers\Controller;
 use App\Models\Scene;
 use Illuminate\Http\Request;
@@ -43,99 +44,75 @@ class SceneController extends Controller
     }
 
     /**
-     * Lưu scene mới vào database
+     * Lưu ảnh 360° (Hỗ trợ xử lý từng file qua AJAX Queue)
      */
     public function store(Request $request)
     {
-        // Kiểm tra dữ liệu đầu vào
+        // Validate dữ liệu
         $request->validate([
-            'name' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:20480',
+            'images' => 'required|array',
+            'images.*' => 'required|image|mimes:jpg,jpeg,png|max:20480',
         ], [
-            'name.required' => 'Bạn chưa nhập tên scene.',
-            'image.required' => 'Bạn chưa chọn file ảnh panorama.',
-            'image.image' => 'File tải lên phải là hình ảnh.',
+            'images.required' => 'Bạn chưa chọn file ảnh panorama.',
+            'images.*.image' => 'File tải lên không phải là hình ảnh.',
+            'images.*.mimes' => 'Định dạng ảnh không hợp lệ.',
+            'images.*.max' => 'Dung lượng ảnh không được vượt quá 20MB.',
         ]);
 
-        /**
-         * Kiểm tra ảnh có đúng định dạng panorama 360 hay không
-         * Ảnh 360 equirectangular thường có tỉ lệ 2:1
-         */
-        if ($request->hasFile('image')) {
+        $errors = [];
+        $successCount = 0;
 
-            $img = $request->file('image');
+        foreach ($request->file('images') as $img) {
+            $sceneName = $img->getClientOriginalName();
 
-            // Lấy kích thước ảnh
+            // Kiểm tra tỉ lệ 2:1
             $size = @getimagesize($img->getRealPath());
-
             if ($size) {
-
                 $width = $size[0];
                 $height = $size[1];
-
-                // Kiểm tra tỉ lệ gần bằng 2:1
-                if (abs(($width / $height) - 2) > 0.01) {
-
-                    return back()
-                        ->withErrors([
-                            'image' => 'Ảnh phải có định dạng panorama 360 (tỉ lệ 2:1).'
-                        ])
-                        ->withInput();
+                if (abs(($width / $height) - 2) > 0.05) {
+                    $errors[] = "Ảnh '{$sceneName}' sai tỉ lệ chuẩn 2:1.";
+                    continue;
                 }
+            }
+
+            // Nén và lưu
+            $path = $this->compressAndStore($img);
+
+            Scene::create([
+                'name' => $sceneName,
+                'image_path' => $path,
+                'initial_yaw' => null,
+                'initial_pitch' => null,
+                'initial_fov' => null,
+                'is_default' => false,
+                'is_start' => false,
+            ]);
+
+            $successCount++;
+        }
+
+        // Đảm bảo có ít nhất 1 Scene làm mặc định
+        if (!Scene::where('is_default', true)->exists()) {
+            $firstScene = Scene::orderBy('id')->first();
+            if ($firstScene) {
+                $firstScene->update(['is_default' => true]);
             }
         }
 
-        // Biến lưu đường dẫn ảnh
-        $path = null;
-
-        // Nếu có upload ảnh thì nén và lưu
-        if ($request->hasFile('image')) {
-            $path = $this->compressAndStore($request->file('image'));
-        }
-
-        // Lấy trạng thái checkbox
-        $isDefault = $request->boolean('is_default'); // scene xuất phát
-        $isStart = $request->boolean('is_start'); // scene hiển thị menu
-
-        /**
-         * Nếu admin chọn scene này là điểm xuất phát
-         * thì phải bỏ trạng thái default của scene cũ
-         */
-        if ($isDefault) {
-            Scene::where('is_default', true)->update([
-                'is_default' => false
+        // NẾU LÀ REQUEST TỪ JS AJAX: Trả về JSON để JS chạy tiếp vòng lặp
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => $successCount > 0,
+                'errors' => $errors
             ]);
         }
 
-        // Tạo scene mới
-        $scene = Scene::create([
-            'name' => $request->name,
-            'image_path' => $path,
-            'initial_yaw' => null,
-            'initial_pitch' => null,
-            'initial_fov' => null,
-            'is_default' => $isDefault,
-            'is_start' => $isStart,
-        ]);
-
-        /**
-         * Nếu sau khi thêm scene mà chưa có scene nào là default
-         * thì lấy scene có id nhỏ nhất làm điểm xuất phát
-         */
-        if (!Scene::where('is_default', true)->exists()) {
-
-            $firstScene = Scene::orderBy('id')->first();
-
-            if ($firstScene) {
-                $firstScene->update([
-                    'is_default' => true
-                ]);
-            }
+        // NẾU LÀ REQUEST THÔNG THƯỜNG (Dự phòng)
+        if (count($errors) > 0) {
+            return redirect()->route('admin.scenes.index')->with('warning', implode(" | ", $errors));
         }
-
-        return redirect()
-            ->route('admin.scenes.index')
-            ->with('success', 'Thêm scene thành công!');
+        return redirect()->route('admin.scenes.index')->with('success', "Tải lên thành công!");
     }
 
     /**
@@ -263,10 +240,12 @@ class SceneController extends Controller
 
         // danh sách đối tượng du lịch (dropdown)
         $touristObjects = TouristObject::orderBy('name')->get();
+        $locations = Location::orderBy('name')->get();
 
         return view('admin.scenes.hotspots', compact(
             'scene',
             'scenes',
+            'locations',
             'touristObjects'
         ));
     }
