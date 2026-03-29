@@ -16,6 +16,13 @@ body {
   line-height: 1.7;
 }
 
+/* Khóa chặt chiều ngang, không cho phép cuộn ngang dưới mọi hình thức */
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+}
+
 h1, h2, h3, h4, h5 {
   font-family: 'Playfair Display', serif;
   color: var(--primary);
@@ -314,9 +321,34 @@ footer a:hover { color: var(--accent); }
       margin-top: 10px;
   }
   .navbar-collapse .nav-link { color: var(--text-dark) !important; text-shadow: none; }
+
+  /* Tắt gạch chân cũ của menu ngang đi */
+  .navbar-collapse .nav-link::after {
+      display: none;
+  }
+
+  /* SỬA ICON FACEBOOK: Trong suốt, nằm giữa, màu xanh rêu */
+  .navbar-collapse .nav-social-icon {
+      background: transparent !important;
+      color: var(--primary) !important;
+      margin: 15px auto 0;
+      box-shadow: none;
+      width: auto; height: auto;
+      font-size: 1.5rem; /* Cho icon to lên xíu dễ bấm */
+  }
+
+  /* Hiệu ứng khi bấm vào icon FB */
+  .navbar-collapse .nav-social-icon:hover {
+      color: var(--accent) !important; /* Đổi màu cam */
+      transform: scale(1.1);
+  }
+
+  .logo-img{
+    height: 60px;
+  }
 }
 
-/* Màn hình Mobile (Nhỏ hơn 768px) */
+/* Màn hình Mobile (Nhỏ hơn 768px) - GIỮ NGUYÊN CODE CỦA BẠN */
 @media (max-width: 768px) {
   .hero { height: auto; min-height: 500px; padding: 120px 0 60px; }
   .display-3 { font-size: 2.2rem; }
@@ -340,4 +372,8 @@ footer a:hover { color: var(--accent); }
   .carousel-caption { padding: 1rem; bottom: 1rem; width: 90%; }
 
   .back-to-top { bottom: 20px; right: 20px; width: 45px; height: 45px; font-size: 1rem; }
+
+  .logo-img{
+    height: 50px;
+  }
 }
