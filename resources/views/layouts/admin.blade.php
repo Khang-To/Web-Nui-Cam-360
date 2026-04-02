@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="{{ asset('admin-assets/css/toast.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/toast.css') }}">
 
     @stack('styles')
     <style>
@@ -90,7 +90,7 @@
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('admin.reviews.index') }}">
                             <i class="align-middle me-2 bi bi-chat-left-text"></i>
-                            <span class="align-middle">Đánh giá khách hàng</span>
+                            <span class="align-middle">Quản lý đánh giá</span>
                         </a>
                     </li>
 
@@ -206,7 +206,7 @@
     </div>
 
     <script src="{{ asset('admin-assets/js/app.js') }}"></script>
-    <script src="{{ asset('admin-assets/js/toast.js') }}"></script>
+    <script src="{{ asset('js/toast.js') }}"></script>
 
     @stack('scripts')
 

@@ -39,6 +39,9 @@ Route::get('/virtual-tour', [VirtualTourController::class, 'index'])
 Route::get('/virtual-tour/scene/{scene}', [VirtualTourController::class, 'getScene'])
     ->name('client.virtualtour.scene');
 
+// Route xử lý việc gửi form đánh giá
+Route::post('/gioi-thieu/gui-danh-gia', [AboutController::class, 'store'])->name('client.reviews.store');
+
 // ==========================================
 // ROUTES CHO TRANG QUẢN TRỊ (ADMIN)
 // ==========================================
@@ -93,7 +96,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::post('web_settings', [WebSettingController::class, 'store'])->name('web_settings.store');
 
     // 3. Đánh giá khách hàng (Admin chỉ cần xem danh sách, duyệt/ẩn và xóa)
-    Route::resource('reviews', ReviewController::class)->only(['index', 'update', 'destroy']);
+    Route::resource('reviews', ReviewController::class)->only(['index', 'update', 'destroy', 'show']);
 });
 
 Route::post(

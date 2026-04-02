@@ -1,10 +1,12 @@
+// Các biến toàn cục dùng chung cho Marzipano
 let viewer;
 let scene;
-let targetViewer = null;
-let targetView = null;
+let targetViewer = null; // Dùng cho ảnh preview thu nhỏ của Scene đích
+let targetView = null;   // Dùng để lấy góc nhìn hiện tại của Scene đích
 
 /**
- * INIT
+ * 1. KHỞI TẠO BAN ĐẦU (INIT)
+ * Được gọi khi trang web vừa load xong
  */
 function initSceneViewer() {
     const pano = document.getElementById("pano");
@@ -12,6 +14,7 @@ function initSceneViewer() {
 
     loadScene(sceneData);
 
+    // Kích hoạt các sự kiện tương tác
     initDoubleClick();
     initModalEvents();
     initLocationFilter();
@@ -21,12 +24,14 @@ function initSceneViewer() {
 }
 
 /**
- * LOAD SCENE (Giới hạn Zoom)
+ * 2. TẢI CẢNH 360 & HOTSPOTS
+ * Cấu hình giới hạn zoom và nạp ảnh vào khung Marzipano
  */
 function loadScene(data) {
     const source = Marzipano.ImageUrlSource.fromString(data.image);
     const geometry = new Marzipano.EquirectGeometry([{ width: 4000 }]);
 
+    // Giới hạn zoom out (FOV tối đa 120 độ) để không bị méo ảnh
     const limiter = Marzipano.RectilinearView.limit.traditional(4000, 120 * Math.PI / 180);
 
     const view = new Marzipano.RectilinearView({
@@ -38,15 +43,17 @@ function loadScene(data) {
     scene = viewer.createScene({ source, geometry, view });
     scene.switchTo();
 
+    // Fix lỗi tràn viền của hotspot container
     setTimeout(() => {
         scene.hotspotContainer()._container.style.overflow = "hidden";
     }, 100);
 
-    loadHotspots();
+    loadHotspots(); // Tải danh sách hotspot có sẵn
 }
 
 /**
- * HÀM PHỤ: GỠ HOTSPOT KHỎI MARZIPANO
+ * 3. HÀM PHỤ: XÓA HOTSPOT KHỎI MARZIPANO
+ * Dùng khi update hoặc xóa hotspot để không bị trùng lặp icon
  */
 function removeHotspotById(id) {
     let existingWrapper = document.querySelector(`.hotspot-wrapper[data-id="${id}"]`);
@@ -62,14 +69,15 @@ function removeHotspotById(id) {
 }
 
 /**
- * TẠO ICON HOTSPOT & SỰ KIỆN SỬA
+ * 4. VẼ ICON HOTSPOT LÊN ẢNH 360
+ * Gắn sự kiện click mở Modal Sửa cho từng icon
  */
 function createHotspotElement(h) {
     let wrapper = document.createElement("div");
     wrapper.className = "hotspot-wrapper";
     wrapper.setAttribute('data-id', h.id);
 
-    // 1. TẠO TOOLTIP (NHÃN TÊN)
+    // Tạo tooltip (nhãn tên hiện khi rê chuột)
     let label = document.createElement("span");
     label.className = "hotspot-label";
     if (h.type === 'link') {
@@ -79,15 +87,14 @@ function createHotspotElement(h) {
     }
     wrapper.appendChild(label);
 
-    // 2. TẠO ICON
+    // Tạo icon hình ảnh (link chuyển cảnh hoặc info)
     let el = document.createElement("img");
     el.src = h.type === "link" ? "/images/icons/link.png" : "/images/icons/info.png";
     el.className = "hotspot-icon";
-    el.style.transform = `rotate(${h.rotation || 0}deg)`;
-
+    el.style.transform = `rotate(${h.rotation || 0}deg)`; // Xoay mũi tên (nếu có)
     wrapper.appendChild(el);
 
-    // 3. Sự kiện Click mở Modal Sửa
+    // Sự kiện Click vào Hotspot -> Mở form cập nhật
     wrapper.onclick = function() {
         document.getElementById('hotspot_id').value = h.id;
         document.getElementById('yaw').value = h.yaw;
@@ -101,7 +108,10 @@ function createHotspotElement(h) {
         document.getElementById('target_pitch').value = (h.target_pitch !== null && h.target_pitch !== undefined) ? h.target_pitch : "";
         document.getElementById('target_fov').value = (h.target_fov !== null && h.target_fov !== undefined) ? h.target_fov : "";
 
+        // Hiện nút Xóa vì đây là form cập nhật
         document.getElementById('deleteHotspot').style.display = "inline-block";
+
+        // Kích hoạt thay đổi giao diện form
         document.getElementById('type').dispatchEvent(new Event('change'));
         if (h.type === 'link') {
             document.getElementById('icon-preview').style.transform = `rotate(${h.rotation}deg)`;
@@ -111,6 +121,7 @@ function createHotspotElement(h) {
         new bootstrap.Modal(document.getElementById('hotspotModal')).show();
     };
 
+    // Đưa hotspot vào Scene
     scene.hotspotContainer().createHotspot(wrapper, {
         yaw: parseFloat(h.yaw),
         pitch: parseFloat(h.pitch)
@@ -123,18 +134,20 @@ function loadHotspots() {
 }
 
 /**
- * DOUBLE CLICK (THÊM MỚI)
+ * 5. SỰ KIỆN DOUBLE CLICK TẠO HOTSPOT MỚI
  */
 function initDoubleClick() {
     const pano = document.getElementById("pano");
 
     pano.addEventListener("dblclick", function(e) {
+        // Lấy tọa độ click chuột trên ảnh 360
         const rect = pano.getBoundingClientRect();
         const coords = viewer.view().screenToCoordinates({
             x: e.clientX - rect.left,
             y: e.clientY - rect.top
         });
 
+        // Reset toàn bộ form về trạng thái trống để thêm mới
         document.getElementById('hotspot_id').value = "";
         document.getElementById('yaw').value = coords.yaw;
         document.getElementById('pitch').value = coords.pitch;
@@ -146,8 +159,15 @@ function initDoubleClick() {
         document.getElementById('target_pitch').value = "";
         document.getElementById('target_fov').value = "";
 
+        // Ẩn nút xóa vì đang tạo mới
         document.getElementById('deleteHotspot').style.display = "none";
+
+        // Kích hoạt thay đổi giao diện theo loại (Link/Info)
         document.getElementById('type').dispatchEvent(new Event('change'));
+
+        // ĐÃ FIX: Bắt buộc kích hoạt sự kiện change của target_scene_id để xóa sạch khung ảnh mini cũ
+        document.getElementById('target_scene_id').dispatchEvent(new Event('change'));
+
         document.getElementById('icon-preview').style.transform = `rotate(0deg)`;
 
         new bootstrap.Modal(document.getElementById('hotspotModal')).show();
@@ -155,7 +175,7 @@ function initDoubleClick() {
 }
 
 /**
- * GIAO DIỆN MODAL
+ * 6. XỬ LÝ GIAO DIỆN MODAL VÀ ẢNH PREVIEW MINI
  */
 function initModalEvents() {
     const typeSelect = document.getElementById('type');
@@ -167,12 +187,14 @@ function initModalEvents() {
     const btnSetTargetView = document.getElementById('btnSetTargetView');
     const modalElement = document.getElementById('hotspotModal');
 
+    // Sửa lỗi kích thước khung Marzipano mini khi modal vừa hiện lên
     modalElement.addEventListener('shown.bs.modal', function () {
         if (targetViewer) {
             targetViewer.updateSize();
         }
     });
 
+    // Chuyển đổi giao diện giữa "Link chuyển cảnh" và "Info thông tin"
     typeSelect.addEventListener('change', function() {
         if (this.value === 'link') {
             linkGroup.style.display = 'block';
@@ -185,16 +207,19 @@ function initModalEvents() {
         }
     });
 
+    // Xoay icon xem trước
     rotationInput.addEventListener('input', function() {
         if (iconPreview) iconPreview.style.transform = `rotate(${this.value}deg)`;
     });
 
+    // Xử lý load ảnh preview mini khi chọn Scene đích
     targetSceneSelect.addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
-        const imageUrl = selectedOption.getAttribute('data-image');
+        const imageUrl = selectedOption ? selectedOption.getAttribute('data-image') : null;
+        const container = document.getElementById('target-pano');
 
         if (imageUrl) {
-            const container = document.getElementById('target-pano');
+            // Có chọn Scene -> Khởi tạo viewer thu nhỏ
             if (targetViewer) targetViewer.destroy();
 
             targetViewer = new Marzipano.Viewer(container);
@@ -215,10 +240,18 @@ function initModalEvents() {
             const miniScene = targetViewer.createScene({ source, geometry, view: targetView });
             miniScene.switchTo();
         } else {
-            if (targetViewer) targetViewer.destroy();
+            // ĐÃ FIX: Không chọn Scene (hoặc tạo mới) -> Xóa sạch viewer cũ và rác thẻ canvas
+            if (targetViewer) {
+                targetViewer.destroy();
+                targetViewer = null;
+            }
+            if (container) {
+                container.innerHTML = ""; // Quét sạch tàn dư HTML
+            }
         }
     });
 
+    // Chốt góc nhìn Scene đích vào các ô Input
     if (btnSetTargetView) {
         btnSetTargetView.addEventListener('click', function() {
             if (!targetView) return;
@@ -231,42 +264,37 @@ function initModalEvents() {
 }
 
 /**
- * XỬ LÝ LỌC ĐỐI TƯỢNG
+ * 7. BỘ LỌC ĐỐI TƯỢNG (INFO HOTSPOT)
  */
 function initLocationFilter() {
     const filterLocation = document.getElementById('filter_location_id');
     const objectSelect = document.getElementById('tourist_object_id');
 
     if (filterLocation && objectSelect) {
-        // Lưu toàn bộ thẻ option ban đầu
-        const allOptions = Array.from(objectSelect.options);
+        const allOptions = Array.from(objectSelect.options); // Lưu danh sách gốc
 
         filterLocation.addEventListener('change', function () {
             const selectedLocation = this.value;
+            objectSelect.innerHTML = ''; // Xóa sạch
 
-            // Xóa sạch danh sách đối tượng
-            objectSelect.innerHTML = '';
-
-            // Lọc và thêm lại
+            // Lọc và render lại
             allOptions.forEach(option => {
                 if (option.value === "") {
                     objectSelect.appendChild(option);
                     return;
                 }
-
                 if (selectedLocation === 'all' || option.getAttribute('data-location') === selectedLocation) {
                     objectSelect.appendChild(option);
                 }
             });
 
-            // Nếu người dùng đang tương tác, reset giá trị về rỗng
-            objectSelect.value = "";
+            objectSelect.value = ""; // Đặt về mặc định
         });
     }
 }
 
 /**
- * LƯU (AJAX 100% KHÔNG RELOAD)
+ * 8. LƯU HOTSPOT (THÊM/SỬA QUA AJAX)
  */
 function initSave() {
     document.getElementById('saveHotspot').onclick = function() {
@@ -282,15 +310,17 @@ function initSave() {
         const tPitch = document.getElementById('target_pitch').value;
         const tFov = document.getElementById('target_fov').value;
 
-        if (typeVal === "link" && !targetSceneVal) { showToast("Vui lòng chọn scene đích", "warning"); return; }
-        if (typeVal === "info" && !touristObjVal) { showToast("Vui lòng chọn đối tượng", "warning"); return; }
+        // Validate cơ bản trước khi gửi
+        if (typeVal === "link" && !targetSceneVal) { showToast("Vui lòng chọn cảnh đích", "warning"); return; }
+        if (typeVal === "info" && !touristObjVal) { showToast("Vui lòng chọn thông tin đối tượng", "warning"); return; }
 
         const url = id ? `/admin/hotspots/${id}` : "/admin/hotspots";
-
         const btnSave = this;
+
         btnSave.disabled = true;
         btnSave.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Đang lưu...';
 
+        // Gói dữ liệu gửi lên Laravel
         const payloadData = {
             _method: id ? 'PUT' : 'POST',
             scene_id: sceneData.id,
@@ -306,7 +336,7 @@ function initSave() {
         };
 
         fetch(url, {
-            method: 'POST',
+            method: 'POST', // Dùng POST kèm _method: PUT cho Laravel Update
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
@@ -319,33 +349,29 @@ function initSave() {
             try {
                 data = JSON.parse(text);
             } catch (e) {
-                console.error("LỖI LARAVEL TRẢ VỀ:", text);
-                throw new Error("Lỗi Server: Hãy bấm F12 -> tab Console để xem nguyên nhân gốc!");
+                console.error("LỖI LARAVEL:", text);
+                throw new Error("Lỗi Server: Vui lòng F12 -> Console để xem chi tiết!");
             }
 
             if (!res.ok) {
                 let errorMsg = "Có lỗi xảy ra từ máy chủ!";
-                if (data.errors) {
-                    errorMsg = Object.values(data.errors)[0][0];
-                } else if (data.message) {
-                    errorMsg = data.message;
-                }
+                if (data.errors) errorMsg = Object.values(data.errors)[0][0]; // Lấy lỗi validate đầu tiên
+                else if (data.message) errorMsg = data.message;
                 throw new Error(errorMsg);
             }
             return data;
         })
         .then(data => {
             if(data.success) {
-                showToast(id ? "Cập nhật Hotspot thành công!" : "Thêm mới Hotspot thành công!", "success");
+                showToast(id ? "Cập nhật thành công!" : "Thêm mới thành công!", "success");
                 bootstrap.Modal.getInstance(document.getElementById('hotspotModal')).hide();
 
-                // LẤY TÊN TỪ THẺ SELECT DROPDOWN NGAY TRÊN MODAL
+                // Lấy tên cảnh/đối tượng từ Dropdown để gán vào Tooltip tức thì
                 let tsSelect = document.getElementById('target_scene_id');
                 let toSelect = document.getElementById('tourist_object_id');
                 let tsName = targetSceneVal ? tsSelect.options[tsSelect.selectedIndex].text.trim() : null;
                 let toName = touristObjVal ? toSelect.options[toSelect.selectedIndex].text.trim() : null;
 
-                // TẠO OBJECT DỮ LIỆU ĐỂ HÀM CREATE VẼ RA
                 let hData = {
                     id: id ? id : data.hotspot.id,
                     type: payloadData.type,
@@ -357,18 +383,13 @@ function initSave() {
                     target_yaw: payloadData.target_yaw,
                     target_pitch: payloadData.target_pitch,
                     target_fov: payloadData.target_fov,
-                    // Ép dữ liệu ảo để hàm createHotspotElement đọc được ngay tên của Tooltip
                     target_scene: tsName ? { name: tsName } : null,
                     tourist_object: toName ? { name: toName } : null
                 };
 
-                if (id) {
-                    removeHotspotById(id);
-                }
-
-                // VẼ ICON LÊN CÙNG TOOLTIP MỚI
+                // Xóa icon cũ (nếu là update) và vẽ lại icon mới ngay lập tức
+                if (id) removeHotspotById(id);
                 createHotspotElement(hData);
-
             } else {
                 showToast("Lỗi xử lý logic từ máy chủ!", "error");
             }
@@ -384,7 +405,7 @@ function initSave() {
 }
 
 /**
- * XÓA
+ * 9. XÓA HOTSPOT QUA AJAX
  */
 function initDelete() {
     const deleteBtn = document.getElementById('deleteHotspot');
@@ -400,14 +421,17 @@ function initDelete() {
 
         fetch(`/admin/hotspots/${id}`, {
             method: "DELETE",
-            headers: { "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content }
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                "Accept": "application/json"
+            }
         })
         .then(res => res.json())
         .then(data => {
             if(data.success) {
                 showToast("Đã xóa Hotspot!", "success");
                 bootstrap.Modal.getInstance(document.getElementById('hotspotModal')).hide();
-                removeHotspotById(id);
+                removeHotspotById(id); // Xóa icon khỏi màn hình ngay lập tức
             } else {
                 showToast("Không thể xóa!", "error");
             }
@@ -421,7 +445,7 @@ function initDelete() {
 }
 
 /**
- * SET VIEW SCENE BAN ĐẦU
+ * 10. CHỐT GÓC NHÌN MẶC ĐỊNH CHO SCENE HIỆN TẠI
  */
 function initSetInitialView() {
     document.getElementById('btnSetView').onclick = function() {
@@ -441,7 +465,7 @@ function initSetInitialView() {
             body: JSON.stringify({ yaw: v.yaw(), pitch: v.pitch(), fov: v.fov() })
         })
         .then(res => res.json())
-        .then(data => showToast("Đã lưu góc nhìn mặc định", "success"))
+        .then(data => showToast("Đã lưu góc nhìn mặc định thành công", "success"))
         .catch(err => showToast("Không thể lưu góc nhìn", "error"))
         .finally(() => {
             btnSetView.disabled = false;
@@ -450,4 +474,5 @@ function initSetInitialView() {
     };
 }
 
+// Bắt đầu chạy script khi web load xong
 document.addEventListener("DOMContentLoaded", initSceneViewer);

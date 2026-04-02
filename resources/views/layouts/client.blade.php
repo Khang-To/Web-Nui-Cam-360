@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>@yield('title', 'Mai Tùng House - Núi Cấm An Giang | Bình Yên Giữa Thiên Nhiên')</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -12,8 +14,12 @@
         href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap"
         rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
 
     <link href="{{ asset('client-assets/css/client-home.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/toast.css') }}">
+
 
     @stack('styles')
 </head>
@@ -43,7 +49,8 @@
                         <a class="nav-link {{ request()->routeIs('client.location.*') ? 'active' : '' }}"
                             href="{{ route('client.location.index') }}">Điểm đến</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('client.virtualtour.*') ? 'active' : '' }}"
+                    <li class="nav-item"><a
+                            class="nav-link {{ request()->routeIs('client.virtualtour.*') ? 'active' : '' }}"
                             href="{{ route('client.virtualtour.index') }}">Tour 360°</a></li>
 
                     <li class="nav-item ms-lg-3 mt-3 mt-lg-0 mb-3 mb-lg-0">
@@ -61,6 +68,42 @@
         @yield('content')
     </main>
 
+    <div class="toast-container">
+
+        {{-- SUCCESS --}}
+        @if (session('success'))
+            <div class="toast-item toast-success">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>{{ session('success') }}</span>
+            </div>
+        @endif
+
+        {{-- VALIDATE ERROR --}}
+        @if ($errors->any())
+            <div class="toast-item toast-error">
+                <i class="bi bi-x-circle-fill"></i>
+                <span>{{ $errors->first() }}</span>
+            </div>
+        @endif
+
+        {{-- CUSTOM ERROR --}}
+        @if (session('error'))
+            <div class="toast-item toast-error">
+                <i class="bi bi-x-circle-fill"></i>
+                <span>{{ session('error') }}</span>
+            </div>
+        @endif
+
+        {{-- WARNING --}}
+        @if (session('warning'))
+            <div class="toast-item toast-warning">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span>{{ session('warning') }}</span>
+            </div>
+        @endif
+
+    </div>
+
     <footer>
         <div class="container">
             <div class="row">
@@ -75,7 +118,8 @@
                         <li class="mb-2"><a href="{{ route('home') }}">Trang chủ</a></li>
                         <li class="mb-2"><a href="{{ route('client.about') }}">Về Mai Tùng</a></li>
                         <li class="mb-2"><a href="{{ route('client.location.index') }}">Điểm tham quan</a></li>
-                        <li class="mb-2"><a href="{{ route('client.virtualtour.index') }}">Trải nghiệm VR 360°</a></li>
+                        <li class="mb-2"><a href="{{ route('client.virtualtour.index') }}">Trải nghiệm VR 360°</a>
+                        </li>
                     </ul>
                 </div>
                 <div class="col-lg-4 mb-4 text-center text-lg-start">
@@ -102,6 +146,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="{{ asset('client-assets/js/client-home.js') }}"></script>
+    <script src="{{ asset('js/toast.js') }}"></script>
 
     @stack('scripts')
 </body>
