@@ -71,7 +71,7 @@
                                             <a href="{{ route('admin.scenes.edit', $scene) }}" class="btn btn-sm btn-warning">
                                                 <i class="bi bi-pencil"></i> Sửa
                                             </a>
-                                            <form action="{{ route('admin.scenes.destroy', $scene) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa scene này? Các liên kết (hotspots) tới scene này cũng sẽ bị gỡ bỏ!')">
+                                            <form action="{{ route('admin.scenes.destroy', $scene) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa scene này? Các hotspot bên trong scene cũng sẽ bị xóa.')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-danger">

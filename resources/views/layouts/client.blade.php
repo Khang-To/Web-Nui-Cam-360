@@ -29,7 +29,8 @@
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
-                <img src="{{ asset('images/logo-mai-tung-house-nui-cam.png') }}" alt="Mai Tùng" class="logo-img">
+                <img src="{{ !empty($globalSettings['logo']) ? asset('storage/' . $globalSettings['logo']) : asset('images/logo-mai-tung-house-nui-cam.png') }}"
+                    alt="Mai Tùng" class="logo-img">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 style="border: none;">
@@ -54,7 +55,7 @@
                             href="{{ route('client.virtualtour.index') }}">Tour 360°</a></li>
 
                     <li class="nav-item ms-lg-3 mt-3 mt-lg-0 mb-3 mb-lg-0">
-                        <a class="nav-social-icon" href="https://www.facebook.com/thaoduoctutam2288/" target="_blank"
+                        <a class="nav-social-icon" href="{{ $globalSettings['facebook'] ?? '#' }}" target="_blank"
                             title="Theo dõi Facebook Mai Tùng">
                             <i class="fab fa-facebook-f"></i>
                         </a>
@@ -125,10 +126,21 @@
                 <div class="col-lg-4 mb-4 text-center text-lg-start">
                     <h5 class="fw-bold">Liên hệ</h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2 text-warning"></i>Khu du lịch Núi Cấm,
-                            Tịnh Biên, An Giang</li>
-                        <li class="mb-2"><i class="fas fa-phone-alt me-2 text-warning"></i>Hotline: 0123 456 789</li>
-                        <li class="mb-2"><i class="fas fa-envelope me-2 text-warning"></i>Email: contact@maitung.vn
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt me-2 text-warning"></i>
+                            {{ $globalSettings['address'] ?? 'Chưa cập nhật' }}
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-phone-alt me-2 text-warning"></i>Hotline:
+                            <a href="tel:{{ str_replace([' ', '.', '-'], '', $globalSettings['phone'] ?? '') }}">
+                                {{ $globalSettings['phone'] ?? 'Chưa cập nhật' }}
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-envelope me-2 text-warning"></i>Email:
+                            <a href="mailto:{{ $globalSettings['email'] ?? '' }}">
+                                {{ $globalSettings['email'] ?? 'Chưa cập nhật' }}
+                            </a>
                         </li>
                     </ul>
                 </div>

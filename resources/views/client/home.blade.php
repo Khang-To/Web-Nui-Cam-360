@@ -9,12 +9,32 @@
         $heroBg = '/images/hero-background/banner-khu-du-lich-nui-cam.jpg';
 
         // Ghi đè hình nền nếu admin có up Banner
-        if(isset($bannerHome) && $bannerHome) {
+        if (isset($bannerHome) && $bannerHome) {
             $heroBg = asset('storage/' . $bannerHome->image_path);
         }
     @endphp
 
-    <section id="home" class="hero d-flex align-items-center" style="background: linear-gradient(rgba(27, 94, 32, 0.6), rgba(0, 0, 0, 0.7)), url('{{ $heroBg }}') center/cover no-repeat fixed;">
+    @php
+        // Lấy link từ Cấu hình, nếu không có thì lấy link mặc định
+        $rawUrl = $globalSettings['video_link'] ?? 'https://www.youtube.com/embed/NABivpBPqck';
+
+        // Tự động chuyển link thường (watch?v= hoặc youtu.be) thành link embed chuẩn của iframe
+        if (str_contains($rawUrl, 'watch?v=')) {
+            $embedUrl = str_replace('watch?v=', 'embed/', $rawUrl);
+            $embedUrl = explode('&', $embedUrl)[0]; // Cắt bỏ các tham số linh tinh phía sau
+        } elseif (str_contains($rawUrl, 'youtu.be/')) {
+            $embedUrl = str_replace('youtu.be/', 'youtube.com/embed/', $rawUrl);
+            $embedUrl = explode('?', $embedUrl)[0];
+        } else {
+            $embedUrl = $rawUrl;
+        }
+
+        // Tự động nối thêm đuôi autoplay và mute để video tự chạy mà không phát tiếng
+        $finalUrl = str_contains($embedUrl, '?') ? $embedUrl . '&autoplay=1&mute=1' : $embedUrl . '?autoplay=1&mute=1';
+    @endphp
+
+    <section id="home" class="hero d-flex align-items-center"
+        style="background: linear-gradient(rgba(27, 94, 32, 0.6), rgba(0, 0, 0, 0.7)), url('{{ $heroBg }}') center/cover no-repeat fixed;">
         <div class="container text-center">
             <h1 class="display-3 fw-bold mb-4" data-aos="fade-up">Bình Yên Giữa Đại Ngàn Thiên Cấm Sơn</h1>
             <p class="lead fs-5 mb-5 mx-auto" style="max-width: 700px;" data-aos="fade-up" data-aos-delay="200">
@@ -23,7 +43,8 @@
             </p>
             <div class="d-flex gap-3 justify-content-center" data-aos="fade-up" data-aos-delay="400">
                 <a href="#danh-thang" class="btn btn-accent">Khám phá ngay</a>
-                <a href="{{ route('client.virtualtour.index') }}" class="btn btn-outline-light"><i class="fas fa-vr-cardboard me-2"></i>Xem Tour 360°</a>
+                <a href="{{ route('client.virtualtour.index') }}" class="btn btn-outline-light"><i
+                        class="fas fa-vr-cardboard me-2"></i>Xem Tour 360°</a>
             </div>
         </div>
     </section>
@@ -49,9 +70,7 @@
                 <div class="col-lg-6" data-aos="fade-left">
                     <div class="rounded-4 overflow-hidden shadow-lg border border-3 border-white">
                         <div class="ratio ratio-16x9 bg-dark">
-                            <iframe id="flycam-video" src=""
-                                data-src="https://www.youtube.com/embed/NABivpBPqck?autoplay=1&mute=1"
-                                title="Flycam Toàn Cảnh Núi Cấm"
+                            <iframe id="flycam-video" src="" data-src="{{ $finalUrl }}" title="Video Giới Thiệu"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowfullscreen>
                             </iframe>
@@ -83,7 +102,8 @@
                             và Chùa Vạn Linh ngay tại nhà với công nghệ thực tế ảo tương tác toàn cảnh.</p>
                     </div>
                     <div class="col-lg-4 text-lg-end">
-                        <a href="{{ route('client.virtualtour.index') }}" class="btn btn-light btn-lg text-success fw-bold px-4 rounded-pill shadow">
+                        <a href="{{ route('client.virtualtour.index') }}"
+                            class="btn btn-light btn-lg text-success fw-bold px-4 rounded-pill shadow">
                             Trải Nghiệm Ngay <i class="fas fa-arrow-right ms-2"></i>
                         </a>
                     </div>
@@ -141,7 +161,8 @@
 
                             <div class="carousel-indicators">
                                 @foreach ($carousels as $index => $slider)
-                                    <button type="button" data-bs-target="#galleryCarousel" data-bs-slide-to="{{ $index }}"
+                                    <button type="button" data-bs-target="#galleryCarousel"
+                                        data-bs-slide-to="{{ $index }}"
                                         class="{{ $index == 0 ? 'active' : '' }}"></button>
                                 @endforeach
                             </div>
@@ -186,7 +207,7 @@
                             <p class="text-muted mb-0">Hình ảnh đang được cập nhật...</p>
                         </div>
                     @endif
-                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -198,10 +219,7 @@
                 Giang. Chỉ cách trung tâm Châu Đốc khoảng 35km và thành phố Long Xuyên 90km. Đường lên núi hiện đã được trải
                 nhựa rộng rãi, có dịch vụ xe cáp treo và xe ôm đưa rước.</p>
             <div class="ratio ratio-21x9 rounded-4 overflow-hidden shadow-lg" data-aos="zoom-in">
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3728.824339396219!2d104.982946!3d10.506374699999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3109f76b0eaaf8c1%3A0x4a05ad8de3eb6677!2zTWFpIFTDuW5nIEhvdXNlIC0gTsO6aSBD4bqlbQ!5e1!3m2!1svi!2s!4v1773219533638!5m2!1svi!2s"
-                    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+                {!! $globalSettings['map_iframe'] ?? 'Chưa có bản đồ' !!}
             </div>
         </div>
     </section>

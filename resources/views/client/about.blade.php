@@ -207,7 +207,8 @@
                                         <i class="bi bi-star{{ $i <= $rev->rating ? '-fill' : '' }} me-1"></i>
                                     @endfor
                                 </div>
-                                <p class="mb-0 text-dark fst-italic text-break" style="white-space: pre-line;">"{{ $rev->content }}"</p>
+                                <p class="mb-0 text-dark fst-italic text-break" style="white-space: pre-line;">
+                                    "{{ $rev->content }}"</p>
                             </div>
                         @empty
                             <div class="text-center text-muted p-5 bg-light rounded">
@@ -286,11 +287,12 @@
                 Liên hệ ngay với chúng tôi để kiểm tra phòng trống và nhận báo giá tốt nhất cho kỳ nghỉ của bạn.
             </p>
             <div data-aos="zoom-in" data-aos-delay="200">
-                <a href="https://www.facebook.com/maitungnuicam" target="_blank"
+                <a href="https://m.me/thaoduoctutam2288" target="_blank"
                     class="btn btn-accent btn-lg me-sm-3 mb-3 mb-sm-0 px-4">
                     <i class="fab fa-facebook-messenger me-2"></i>Nhắn tin đặt phòng
                 </a>
-                <a href="tel:0123456789" class="btn btn-outline-light btn-lg px-4">
+
+                <a href="tel:{{ str_replace([' ', '.', '-'], '', $globalSettings['phone'] ?? '0123456789') }}" class="btn btn-outline-light btn-lg px-4">
                     <i class="fas fa-phone-alt me-2"></i>Gọi Hotline
                 </a>
             </div>
@@ -300,67 +302,69 @@
 
 {{-- Script xử lý gửi đánh giá bằng AJAX --}}
 @push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const reviewForm = document.getElementById('reviewForm');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reviewForm = document.getElementById('reviewForm');
 
-    if (reviewForm) {
-        reviewForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Chặn load lại trang
+            if (reviewForm) {
+                reviewForm.addEventListener('submit', function(e) {
+                    e.preventDefault(); // Chặn load lại trang
 
-            const btnSubmit = document.getElementById('btnSubmitReview');
-            const originalBtnText = btnSubmit.innerHTML;
+                    const btnSubmit = document.getElementById('btnSubmitReview');
+                    const originalBtnText = btnSubmit.innerHTML;
 
-            // Đổi trạng thái nút thành Loading
-            btnSubmit.disabled = true;
-            btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Đang gửi...';
+                    // Đổi trạng thái nút thành Loading
+                    btnSubmit.disabled = true;
+                    btnSubmit.innerHTML =
+                        '<span class="spinner-border spinner-border-sm me-2"></span> Đang gửi...';
 
-            const formData = new FormData(this);
+                    const formData = new FormData(this);
 
-            fetch('{{ route("client.reviews.store") }}', {
-                method: 'POST',
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                    "Accept": "application/json"
-                },
-                body: formData
-            })
-            .then(async res => {
-                const data = await res.json();
-                if (!res.ok) throw data;
-                return data;
-            })
-            .then(data => {
-                // 1. Dùng thư viện Toast (hoặc Alert mặc định) báo thành công
-                if(typeof showToast === 'function') {
-                    showToast(data.message, "success");
-                } else {
-                    alert(data.message);
-                }
+                    fetch('{{ route('client.reviews.store') }}', {
+                            method: 'POST',
+                            headers: {
+                                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+                                    .content,
+                                "Accept": "application/json"
+                            },
+                            body: formData
+                        })
+                        .then(async res => {
+                            const data = await res.json();
+                            if (!res.ok) throw data;
+                            return data;
+                        })
+                        .then(data => {
+                            // 1. Dùng thư viện Toast (hoặc Alert mặc định) báo thành công
+                            if (typeof showToast === 'function') {
+                                showToast(data.message, "success");
+                            } else {
+                                alert(data.message);
+                            }
 
-                // 2. Clear Form
-                reviewForm.reset();
+                            // 2. Clear Form
+                            reviewForm.reset();
 
-                // 3. (Tùy chọn) Chèn trực tiếp đánh giá mới lên đầu danh sách nết is_approved = true
-                // Do Admin set default(false) nên ta có thể chỉ cần báo: "Đã gửi, chờ duyệt" là đủ.
-            })
-            .catch(err => {
-                let errorMsg = err.message || "Lỗi mạng, không thể gửi đánh giá!";
-                if (err.errors) errorMsg = Object.values(err.errors)[0][0]; // Lỗi Validate
+                            // 3. (Tùy chọn) Chèn trực tiếp đánh giá mới lên đầu danh sách nết is_approved = true
+                            // Do Admin set default(false) nên ta có thể chỉ cần báo: "Đã gửi, chờ duyệt" là đủ.
+                        })
+                        .catch(err => {
+                            let errorMsg = err.message || "Lỗi mạng, không thể gửi đánh giá!";
+                            if (err.errors) errorMsg = Object.values(err.errors)[0][0]; // Lỗi Validate
 
-                if(typeof showToast === 'function') {
-                    showToast(errorMsg, "error");
-                } else {
-                    alert(errorMsg);
-                }
-            })
-            .finally(() => {
-                // Trả lại nút như cũ
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = originalBtnText;
-            });
+                            if (typeof showToast === 'function') {
+                                showToast(errorMsg, "error");
+                            } else {
+                                alert(errorMsg);
+                            }
+                        })
+                        .finally(() => {
+                            // Trả lại nút như cũ
+                            btnSubmit.disabled = false;
+                            btnSubmit.innerHTML = originalBtnText;
+                        });
+                });
+            }
         });
-    }
-});
-</script>
+    </script>
 @endpush

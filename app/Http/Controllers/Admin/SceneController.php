@@ -27,7 +27,7 @@ class SceneController extends Controller
 
         // Sắp xếp scene mới nhất và phân trang 10 bản ghi
         $scenes = $query
-            ->orderBy("id")
+            ->orderBy('id', 'desc')
             ->paginate(10)
             ->appends(['keyword' => $request->keyword]);
 
