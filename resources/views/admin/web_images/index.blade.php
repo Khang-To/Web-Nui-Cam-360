@@ -5,7 +5,10 @@
 @section('content')
 <div class="container-fluid p-0">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h3 mb-0 text-gray-800">Quản lý Hình ảnh (Carousel & Banner)</h1>
+        <h3 class="text-primary">
+            <i class="bi bi-image"></i> Quản lý hình ảnh (Banner, Carousel)
+        </h3>
+
         <a href="{{ route('admin.web_images.create') }}" class="btn btn-primary">
             <i class="bi bi-plus-circle me-1"></i> Thêm hình ảnh mới
         </a>
