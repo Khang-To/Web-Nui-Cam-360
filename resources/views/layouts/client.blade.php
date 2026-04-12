@@ -109,7 +109,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 mb-4 text-center text-lg-start">
-                    <h4 class="fw-bold fs-3 text-white mb-3 d-block">Mai Tùng</h4>
+                    <h4 class="fw-bold fs-3 text-white mb-3 d-block">Mai Tùng House - Núi Cấm</h4>
                     <p class="pe-lg-4">Điểm dừng chân bình yên, mang đến cho bạn không gian thư giãn tuyệt đối giữa đại
                         ngàn linh thiêng của Thiên Cấm Sơn.</p>
                 </div>

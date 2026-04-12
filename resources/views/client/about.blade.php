@@ -231,7 +231,7 @@
                                         <label class="form-label small fw-semibold">Tên của bạn <span
                                                 class="text-danger">*</span></label>
                                         <input type="text" name="name" class="form-control"
-                                            placeholder="VD: Khang Tô" required>
+                                            placeholder="VD: Tô Văn Khang" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label small fw-semibold">Email <span

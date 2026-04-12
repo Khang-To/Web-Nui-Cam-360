@@ -37,13 +37,15 @@ class LocationController extends Controller
 
     public function uploadEditorImage(Request $request)
     {
-        if ($request->hasFile('upload')) {
+        // TinyMCE thường gửi dạng 'file', mình check cả 'upload' và 'file' cho chắc ăn
+        $uploadedFile = $request->file('upload') ?? $request->file('file');
 
-            $file = $request->file('upload');
-            $path = $file->store('editor', 'public');
+        if ($uploadedFile) {
+            $path = $uploadedFile->store('editor', 'public');
 
             return response()->json([
-                'url' => asset('storage/' . $path)
+                // Đổi chữ 'url' thành 'location' để TinyMCE nhận diện được
+                'location' => asset('storage/' . $path)
             ]);
         }
 

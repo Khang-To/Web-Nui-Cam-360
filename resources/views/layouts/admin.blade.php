@@ -194,7 +194,7 @@
                     <div class="row text-muted">
                         <div class="col-6 text-start">
                             <p class="mb-0 mx-auto">
-                                <a class="text-muted" href="#">
+                                <a class="text-muted" href="{{$globalSettings['facebook'] ?? '#'}}" target="_blank">
                                     <strong>Mai Tùng House - Núi Cấm</strong>
                                 </a>
                             </p>

@@ -223,6 +223,7 @@ function addHotspot(h) {
     } else {
         icon.src = "/images/icons/info.png";
         tooltip.innerText = h.tourist_object ? h.tourist_object.name : "Xem thông tin";
+        icon.classList.add("info-icon-bg");
 
         wrapper.onclick = () => {
             if (!h.tourist_object) return;

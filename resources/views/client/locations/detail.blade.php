@@ -42,13 +42,6 @@
 </section>
 
 <style>
-    .content-detail img {
-        max-width: 100%;
-        height: auto !important;
-        border-radius: 8px;
-        margin: 15px 0;
-    }
-
     .custom-hover-link { transition: color 0.3s; }
     .custom-hover-link:hover { color: var(--accent) !important; }
 </style>

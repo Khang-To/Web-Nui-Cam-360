@@ -186,3 +186,11 @@
     visibility: visible;
     transform: translateX(-50%) translateY(0);
 }
+
+/* Nền đen mờ hình tròn cho icon Info */
+.info-icon-bg {
+    background-color: rgba(0, 0, 0, 0.6); /* Nền đen mờ 60% */
+    border-radius: 50%;                   /* Bo thành hình tròn */
+    padding: 10px;                        /* Chừa khoảng trống để lộ nền đen ra ngoài */
+    box-sizing: border-box;               /* Giữ nguyên tổng kích thước 48x48px của hotspot-icon */
+}
