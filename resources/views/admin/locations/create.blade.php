@@ -106,11 +106,11 @@ document.addEventListener("DOMContentLoaded", function () {
     tinymce.init({
         selector: '#editor',
         height: 500,
-
         license_key: 'gpl',
 
+        // 1. THÊM PLUGIN 'paste'
         plugins: [
-            'image', 'link', 'lists', 'table', 'code', 'autoresize'
+            'image', 'link', 'lists', 'table', 'code', 'autoresize', 'paste'
         ],
 
         toolbar: 'undo redo | blocks | bold italic underline | ' +
@@ -119,10 +119,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         menubar: true,
 
+        // 2. BẬT TÍNH NĂNG DÁN ẢNH COPY (Cực kỳ quan trọng)
+        paste_data_images: true,
         automatic_uploads: true,
 
         images_upload_handler: function (blobInfo, progress) {
-
             return new Promise((resolve, reject) => {
 
                 let xhr = new XMLHttpRequest();
@@ -141,12 +142,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     let json = JSON.parse(xhr.responseText);
 
-                    if (!json || typeof json.url !== 'string') {
+                    // 3. ĐỔI 'json.url' THÀNH 'json.location'
+                    if (!json || typeof json.location !== 'string') {
                         reject('Invalid JSON');
                         return;
                     }
 
-                    resolve(json.url);
+                    resolve(json.location);
                 };
 
                 xhr.onerror = function () {
@@ -154,7 +156,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 };
 
                 let formData = new FormData();
-                formData.append('upload', blobInfo.blob(), blobInfo.filename());
+
+                // 4. GỬI LÊN VỚI TÊN 'file' (Thay vì 'upload')
+                formData.append('file', blobInfo.blob(), blobInfo.filename());
 
                 xhr.send(formData);
             });

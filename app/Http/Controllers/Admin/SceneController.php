@@ -236,7 +236,7 @@ class SceneController extends Controller
         ]);
 
         // danh sách scene (dropdown)
-        $scenes = Scene::orderBy('id')->get();
+        $scenes = Scene::orderBy('id', 'desc')->get();
 
         // danh sách đối tượng du lịch (dropdown)
         $touristObjects = TouristObject::orderBy('name')->get();
