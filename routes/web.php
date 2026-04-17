@@ -14,33 +14,31 @@ use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\LocationController as ClientLocationController; // Thêm alias để tránh trùng tên với LocationController của admin
 use App\Http\Controllers\Client\VirtualTourController;
 use App\Http\Controllers\Client\AboutController;
+use App\Http\Middleware\CheckModuleLock;
 
 // ==========================================
 // ROUTES CHO GIAO DIỆN NGƯỜI DÙNG (CLIENT)
 // ==========================================
 
-// Gọi thẳng vào hàm index của HomeController
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// ĐÃ THÊM: Route trỏ về trang Giới thiệu
-Route::get('/gioi-thieu', [AboutController::class, 'index'])->name('client.about');
+// 1. NHÓM TRANG GIỚI THIỆU
+Route::middleware(CheckModuleLock::class . ':lock_about')->group(function () {
+    Route::get('/gioi-thieu', [AboutController::class, 'index'])->name('client.about');
+    Route::post('/gioi-thieu/gui-danh-gia', [AboutController::class, 'store'])->name('client.reviews.store');
+});
 
-// Route Trang Danh sách Thắng cảnh
-Route::get('/danh-thang', [ClientLocationController::class, 'index'])->name('client.location.index');
+// 2. NHÓM TRANG TOUR 360
+Route::middleware(CheckModuleLock::class . ':lock_virtual_tour')->group(function () {
+    Route::get('/virtual-tour', [VirtualTourController::class, 'index'])->name('client.virtualtour.index');
+    Route::get('/virtual-tour/scene/{scene}', [VirtualTourController::class, 'getScene'])->name('client.virtualtour.scene');
+});
 
-// Route Trang Chi tiết Thắng cảnh
-Route::get('/danh-thang/{id}', [ClientLocationController::class, 'detail'])->name('client.location.detail');
-
-// Route Trang Tour 360
-Route::get('/virtual-tour', [VirtualTourController::class, 'index'])
-    ->name('client.virtualtour.index');
-
-// Route AJAX load scene
-Route::get('/virtual-tour/scene/{scene}', [VirtualTourController::class, 'getScene'])
-    ->name('client.virtualtour.scene');
-
-// Route xử lý việc gửi form đánh giá
-Route::post('/gioi-thieu/gui-danh-gia', [AboutController::class, 'store'])->name('client.reviews.store');
+// 3. NHÓM TRANG DANH THẮNG
+Route::middleware(CheckModuleLock::class . ':lock_locations')->group(function () {
+    Route::get('/danh-thang', [ClientLocationController::class, 'index'])->name('client.location.index');
+    Route::get('/danh-thang/{id}', [ClientLocationController::class, 'detail'])->name('client.location.detail');
+});
 
 // ==========================================
 // ROUTES CHO TRANG QUẢN TRỊ (ADMIN)
