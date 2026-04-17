@@ -269,5 +269,5 @@
         window.allScenes = @json($scenes);
     </script>
 
-    <script src="{{ asset('js/scene-editor.js') }}"></script>
+    <script src="{{ asset('admin-assets/js/scene-editor.js') }}"></script>
 @endpush
