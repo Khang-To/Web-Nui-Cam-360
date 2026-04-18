@@ -279,13 +279,21 @@
     </section>
 
     {{-- CALL TO ACTION --}}
-    <section class="py-5" style="background-color: var(--primary);">
-        <div class="container text-center py-5">
+    <section class="py-5 mb-4">
+    <div class="container">
+
+        <div class="text-center py-5 rounded-4 shadow-lg px-3"
+             style="background: linear-gradient(rgba(17, 34, 28, 0.7), rgba(25, 50, 40, 0.7)),
+                    url('{{ asset('storage/' . $bannerAbout->image_path) }}') no-repeat center center fixed;
+                    background-size: cover;">
+
             <h2 class="display-6 fw-bold text-white mb-4" data-aos="zoom-in">Bạn đã sẵn sàng cho chuyến đi chữa lành?</h2>
+
             <p class="lead text-light mb-5 opacity-75 mx-auto" style="max-width: 700px;" data-aos="zoom-in"
                 data-aos-delay="100">
                 Liên hệ ngay với chúng tôi để kiểm tra phòng trống và nhận báo giá tốt nhất cho kỳ nghỉ của bạn.
             </p>
+
             <div data-aos="zoom-in" data-aos-delay="200">
                 <a href="https://m.me/thaoduoctutam2288" target="_blank"
                     class="btn btn-accent btn-lg me-sm-3 mb-3 mb-sm-0 px-4">
@@ -296,8 +304,11 @@
                     <i class="fas fa-phone-alt me-2"></i>Gọi Hotline
                 </a>
             </div>
+
         </div>
-    </section>
+
+    </div>
+</section>
 @endsection
 
 {{-- Script xử lý gửi đánh giá bằng AJAX --}}
