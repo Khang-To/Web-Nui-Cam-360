@@ -209,7 +209,7 @@ function addHotspot(h) {
 
     if (h.type === "link") {
         icon.src = "/images/icons/link.png";
-        tooltip.innerText = h.target_scene_name || "Đi tới đây";
+        tooltip.innerText = h.target_scene_name || "Đường đang được bảo trì";
 
         wrapper.onclick = () => {
             if (h.target_scene_id) {
@@ -222,7 +222,7 @@ function addHotspot(h) {
         };
     } else {
         icon.src = "/images/icons/info.png";
-        tooltip.innerText = h.tourist_object ? h.tourist_object.name : "Xem thông tin";
+        tooltip.innerText = h.tourist_object ? h.tourist_object.name : "Điểm tham quan đang bảo trì";
         icon.classList.add("info-icon-bg");
 
         wrapper.onclick = () => {

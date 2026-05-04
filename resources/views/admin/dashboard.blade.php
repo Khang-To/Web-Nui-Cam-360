@@ -11,7 +11,6 @@
                 <i class="bi bi-house-door-fill text-primary"></i>
                 <strong>Bảng điều khiển</strong>
             </h1>
-            <p class="text-muted mb-0">Tổng quan hệ thống quản lý tour 360° Núi Cấm</p>
         </div>
         <div class="text-end">
             <small class="text-muted">Hôm nay: {{ \Carbon\Carbon::now()->format('d/m/Y') }}</small>
