@@ -51,12 +51,14 @@ class SceneController extends Controller
         // Validate dữ liệu
         $request->validate([
             'images' => 'required|array',
-            'images.*' => 'required|image|mimes:jpg,jpeg,png|max:20480',
+            'images.*' => 'required|image|mimes:jpg,jpeg,png,webp,jfif|max:20480',
         ], [
             'images.required' => 'Bạn chưa chọn file ảnh panorama.',
             'images.*.image' => 'File tải lên không phải là hình ảnh.',
             'images.*.mimes' => 'Định dạng ảnh không hợp lệ.',
             'images.*.max' => 'Dung lượng ảnh không được vượt quá 20MB.',
+            // 👉 NHỚ THÊM DÒNG NÀY ĐỂ DỊCH TIẾNG VIỆT NẾU CODE GIÁN ĐIỆP BỊ LỌT NHÉ
+            'images.*.uploaded' => 'Dung lượng ảnh quá lớn, máy chủ WAMP đã từ chối.',
         ]);
 
         $errors = [];

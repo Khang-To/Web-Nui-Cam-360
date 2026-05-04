@@ -12,7 +12,7 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3">
 
-            <div class="d-flex gap-3">
+            <div class="d-flex gap-3 align-items-center">
                 <a href="{{ route('admin.scenes.index') }}" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left"></i> Danh sách
                 </a>
@@ -21,14 +21,16 @@
                     <i class="bi bi-pencil"></i> Sửa
                 </a>
 
-                <select onchange="location = this.value" class="form-select w-auto">
-                    @foreach ($scenes as $s)
-                        <option value="{{ route('admin.scenes.hotspots', $s->id) }}"
-                            {{ $s->id == $scene->id ? 'selected' : '' }}>
-                            {{ $s->name }}
-                        </option>
-                    @endforeach
-                </select>
+                <div style="width: 250px;"> <!-- Bọc trong div để chỉnh độ rộng -->
+                    <select id="sceneSwitcher" class="form-select select2-scene-switcher">
+                        @foreach ($scenes as $s)
+                            <option value="{{ route('admin.scenes.hotspots', $s->id) }}"
+                                {{ $s->id == $scene->id ? 'selected' : '' }}>
+                                {{ $s->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
 
             <button id="btnSetView" class="btn btn-primary">
@@ -163,6 +165,39 @@
     </div>
 
     <style>
+        /* ================= FIX SELECT2 & BOOTSTRAP ================= */
+        .select2-container .select2-selection--single {
+            height: 38px !important;
+            /* Ép chiều cao bằng với nút btn của Bootstrap */
+            border: 1px solid #ced4da !important;
+            /* Màu viền chuẩn Bootstrap */
+            border-radius: 0.375rem !important;
+            /* Độ bo góc chuẩn Bootstrap 5 */
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        /* Căn giữa chữ bên trong theo chiều dọc */
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: normal !important;
+            padding-left: 0.75rem !important;
+            color: #212529 !important;
+        }
+
+        /* Căn giữa cái mũi tên trỏ xuống */
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 36px !important;
+            top: 1px !important;
+            right: 4px !important;
+        }
+
+        /* Bỏ cái viền đen đen khi click vào */
+        .select2-container--default.select2-container--focus .select2-selection--single {
+            border-color: #86b7fe !important;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+            outline: 0 !important;
+        }
+
         #pano {
             width: 100%;
             height: 60vh;
@@ -253,9 +288,32 @@
 @endsection
 
 @push('scripts')
+    <!-- Thêm CSS của Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <!-- Thêm JS của Select2 (yêu cầu jQuery, nếu dự án bạn đã có jQuery rồi thì không cần load lại jQuery) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script src="{{ asset('js/marzipano.js') }}"></script>
 
     <script>
+        // Khởi tạo Select2 và xử lý sự kiện chuyển trang
+        $(document).ready(function() {
+            $('.select2-scene-switcher').select2({
+                placeholder: "Tìm kiếm scene...",
+                allowClear: false
+            });
+
+            // Lắng nghe sự kiện khi chọn 1 mục
+            $('#sceneSwitcher').on('select2:select', function(e) {
+                var data = e.params.data;
+                // Nếu đường dẫn hợp lệ thì chuyển hướng
+                if (data.id) {
+                    window.location.href = data.id;
+                }
+            });
+        });
+
         // TRUYỀN DỮ LIỆU TỪ LARAVEL SANG JAVASCRIPT
         window.sceneData = {
             id: {{ $scene->id }},

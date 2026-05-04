@@ -42,7 +42,7 @@
                 Nam Bộ.
             </p>
             <div class="d-flex gap-3 justify-content-center" data-aos="fade-up" data-aos-delay="400">
-                <a href="#danh-thang" class="btn btn-accent">Khám phá ngay</a>
+                <a href="#kham-pha" class="btn btn-accent">Khám phá ngay</a>
                 <a href="{{ route('client.virtualtour.index') }}" class="btn btn-outline-light"><i
                         class="fas fa-vr-cardboard me-2"></i>Xem Tour 360°</a>
             </div>
@@ -54,7 +54,7 @@
             <div class="row align-items-center g-5">
                 <div class="col-lg-6" data-aos="fade-right">
                     <span class="text-uppercase fw-bold text-muted letter-spacing-1">Về chúng tôi</span>
-                    <h2 class="display-5 fw-bold mt-2 mb-4">Thiên Cấm Sơn Huyền Thoại</h2>
+                    <h2 class="display-6 fw-bold mt-2 mb-4">Thiên Cấm Sơn Huyền Thoại</h2>
                     <p class="text-muted mb-4 fs-5">
                         Núi Cấm (Thiên Cấm Sơn) tọa lạc tại huyện Tịnh Biên, An Giang, tự hào là ngọn núi cao nhất khu vực
                         Đồng bằng sông Cửu Long. Nơi đây được thiên nhiên ưu ái ban tặng thảm rừng nguyên sinh xanh ngát và
@@ -112,7 +112,73 @@
         </div>
     </section>
 
-    <section id="danh-thang" class="py-5 bg-white">
+    {{-- PHẦN KHÁM PHÁ CHI TIẾT NÚI CẤM --}}
+    <section id="kham-pha" class="py-5 bg-white">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <span class="text-uppercase fw-bold" style="color: var(--accent); letter-spacing: 2px;">Khám phá</span>
+                <h2 class="display-5 fw-bold mt-2">Kỳ Quan Thiên Cấm Sơn</h2>
+                <div class="mx-auto mt-3" style="width: 80px; height: 3px; background: var(--accent);"></div>
+            </div>
+
+            <div class="row align-items-center g-5 mb-5 pb-5">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="position-relative">
+                        <img src="{{ asset('images/nuicam/tuong-phat-di-lac.jpg') }}" class="img-fluid rounded-4 shadow-lg" alt="Tượng Phật Di Lặc Núi Cấm">
+                        <div class="position-absolute bottom-0 start-0 bg-white p-3 m-3 rounded-3 shadow-sm d-none d-md-block" style="width: 200px;">
+                            <span class="fw-bold text-dark">Tượng Phật Di Lặc</span>
+                            <p class="small text-muted mb-0">Đạt kỷ lục lớn nhất trên đỉnh núi tại Châu Á.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <h3 class="fw-bold mb-4">Vùng Đất Tâm Linh Huyền Bí</h3>
+                    <p class="text-muted fs-5 lh-lg">
+                        Núi Cấm không chỉ là một danh thắng, mà còn là tâm điểm của vùng Thất Sơn mầu nhiệm. Tại đây, du khách sẽ được chiêm bái <strong>Tượng Phật Di Lặc</strong> cao 33.6m trắng muốt giữa nền trời xanh.
+                    </p>
+                    <p class="text-muted fs-5 lh-lg">
+                        Tiếng chuông chùa Vạn Linh vang vọng bên hồ Thủy Liêm tĩnh lặng tạo nên một không gian thoát tục, giúp tâm hồn buông bỏ mọi muộn phiền của cuộc sống hối hả.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row align-items-center g-5 mb-5 pb-5 flex-column-reverse flex-lg-row">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <h3 class="fw-bold mb-4">"Đà Lạt" Của Miền Tây Nam Bộ</h3>
+                    <p class="text-muted fs-5 lh-lg">
+                        Với độ cao 716m so với mực nước biển, Núi Cấm sở hữu kiểu khí hậu ôn đới đặc trưng, mát mẻ quanh năm. Buổi sáng sớm, mây mù thường giăng lối che phủ các đỉnh đồi, tạo nên những biển mây tuyệt đẹp cho những tín đồ "săn mây".
+                    </p>
+                    <p class="text-muted fs-5 lh-lg">
+                        Đây là nơi duy nhất ở miền Tây bạn có thể tận hưởng cái se lạnh sảng khoái, hít căng lồng ngực bầu không khí trong lành của rừng nguyên sinh và ngắm nhìn những loài hoa xứ lạnh khoe sắc.
+                    </p>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="position-relative">
+                        <img src="{{ asset('images/nuicam/san-may-nui-cam.jpg') }}" class="img-fluid rounded-4 shadow-lg" alt="Săn mây Núi Cấm">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="position-relative">
+                        <img src="{{ asset('images/nuicam/suoi-thanh-long.jpg') }}" class="img-fluid rounded-4 shadow-lg" alt="Suối Thanh Long">
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <h3 class="fw-bold mb-4">Hệ Sinh Thái Rừng Nguyên Sinh</h3>
+                    <p class="text-muted fs-5 lh-lg">
+                        Thiên Cấm Sơn sở hữu thảm thực vật phong phú với những cây cổ thụ hàng trăm năm tuổi. Những dòng suối mát lạnh như <strong>Suối Thanh Long</strong> len lỏi qua các khe đá, tạo nên bản nhạc của thiên nhiên hùng vĩ.
+                    </p>
+                    <p class="text-muted fs-5 lh-lg">
+                        Du khách có thể trải nghiệm trekking qua các cung đường rừng, khám phá những hang động kỳ bí hay đơn giản là ngồi bên bờ hồ Thủy Liêm ngắm nhìn cá bơi lội, cảm nhận sự giao thoa hoàn hảo giữa đất và trời.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-white">
         <div class="container">
             <div class="text-center mb-5" data-aos="fade-up">
                 <span class="text-uppercase fw-bold" style="color: var(--accent);">Điểm đến</span>

@@ -42,7 +42,7 @@
 
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('admin.dashboard') }}">
-                            <i class="align-middle me-2" data-feather="pie-chart"></i>
+                            <i class="bi bi-pie-chart align-middle me-2"></i>
                             <span class="align-middle">Bảng điều khiển</span>
                         </a>
                     </li>
@@ -53,14 +53,14 @@
 
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('admin.locations.index') }}">
-                            <i class="align-middle me-2" data-feather="map-pin"></i>
+                            <i class="bi bi-geo-alt-fill align-middle me-2"></i>
                             <span class="align-middle">Quản lý địa điểm du lịch</span>
                         </a>
                     </li>
 
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('admin.tourist_objects.index') }}">
-                            <i class="align-middle me-2 bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill align-middle me-2"></i>
                             <span class="align-middle">Quản lý đối tượng tham quan</span>
                         </a>
                     </li>
@@ -71,7 +71,7 @@
 
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('admin.scenes.index') }}">
-                            <i class="align-middle me-2" data-feather="aperture"></i>
+                            <i class="bi bi-camera-fill align-middle me-2"></i>
                             <span class="align-middle">Cấu hình tour 360°</span>
                         </a>
                     </li>
@@ -82,21 +82,21 @@
 
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('admin.web_images.index') }}">
-                            <i class="align-middle me-2 bi bi-images"></i>
+                            <i class="bi bi-images align-middle me-2"></i>
                             <span class="align-middle">Quản lý hình ảnh</span>
                         </a>
                     </li>
 
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('admin.reviews.index') }}">
-                            <i class="align-middle me-2 bi bi-chat-left-text"></i>
+                            <i class="bi bi-chat-left-text align-middle me-2"></i>
                             <span class="align-middle">Quản lý đánh giá</span>
                         </a>
                     </li>
 
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('admin.web_settings.index') }}">
-                            <i class="align-middle me-2 bi bi-gear"></i>
+                            <i class="bi bi-gear align-middle me-2"></i>
                             <span class="align-middle">Cấu hình chung</span>
                         </a>
                     </li>

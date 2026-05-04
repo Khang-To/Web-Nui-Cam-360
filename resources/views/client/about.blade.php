@@ -280,35 +280,48 @@
 
     {{-- CALL TO ACTION --}}
     <section class="py-5 mb-4">
-    <div class="container">
+        <div class="container">
 
-        <div class="text-center py-5 rounded-4 shadow-lg px-3"
-             style="background: linear-gradient(rgba(17, 34, 28, 0.7), rgba(25, 50, 40, 0.7)),
+            <div class="text-center py-5 rounded-4 shadow-lg px-3"
+                style="background: linear-gradient(rgba(17, 34, 28, 0.7), rgba(25, 50, 40, 0.7)),
                     url('{{ asset('storage/' . $bannerAbout->image_path) }}') no-repeat center center fixed;
                     background-size: cover;">
 
-            <h2 class="display-6 fw-bold text-white mb-4" data-aos="zoom-in">Bạn đã sẵn sàng cho chuyến đi chữa lành?</h2>
+                <h2 class="display-6 fw-bold text-white mb-4" data-aos="zoom-in">Bạn đã sẵn sàng cho chuyến đi chữa lành?
+                </h2>
 
-            <p class="lead text-light mb-5 opacity-75 mx-auto" style="max-width: 700px;" data-aos="zoom-in"
-                data-aos-delay="100">
-                Liên hệ ngay với chúng tôi để kiểm tra phòng trống và nhận báo giá tốt nhất cho kỳ nghỉ của bạn.
-            </p>
+                <p class="lead text-light mb-5 opacity-75 mx-auto" style="max-width: 700px;" data-aos="zoom-in"
+                    data-aos-delay="100">
+                    Liên hệ ngay với chúng tôi để kiểm tra phòng trống và nhận báo giá tốt nhất cho kỳ nghỉ của bạn.
+                </p>
 
-            <div data-aos="zoom-in" data-aos-delay="200">
-                <a href="https://m.me/thaoduoctutam2288" target="_blank"
-                    class="btn btn-accent btn-lg me-sm-3 mb-3 mb-sm-0 px-4">
-                    <i class="fab fa-facebook-messenger me-2"></i>Nhắn tin đặt phòng
-                </a>
+                <div data-aos="zoom-in" data-aos-delay="200"
+                    class="d-flex justify-content-center align-items-center flex-wrap gap-3">
 
-                <a href="tel:{{ str_replace([' ', '.', '-'], '', $globalSettings['phone'] ?? '0123456789') }}" class="btn btn-outline-light btn-lg px-4">
-                    <i class="fas fa-phone-alt me-2"></i>Gọi Hotline
-                </a>
+                    <!-- Nút Zalo -->
+                    <a href="https://zalo.me/{{ str_replace([' ', '.', '-'], '', $globalSettings['phone'] ?? '0123456789') }}"
+                        target="_blank"
+                        class="btn btn-lg text-white d-inline-flex align-items-center justify-content-center px-4"
+                        style="background-color: #0068ff; border: 2px solid #0068ff; border-radius: 50px; transition: 0.3s;">
+                        <img src="/images/icons/Icon_of_Zalo.svg.png" alt="Zalo" class="me-2"
+                            style="width: 22px; height: 22px; object-fit: contain;">
+                        Nhắn tin đặt phòng
+                    </a>
+
+                    <!-- Nút Gọi Hotline -->
+                    <a href="tel:{{ str_replace([' ', '.', '-'], '', $globalSettings['phone'] ?? '0123456789') }}"
+                        class="btn btn-outline-light btn-lg d-inline-flex align-items-center justify-content-center px-4"
+                        style="border: 2px solid #fff; border-radius: 50px; transition: 0.3s;">
+                        <i class="fas fa-phone-alt me-2"></i>
+                        Gọi Hotline
+                    </a>
+
+                </div>
+
             </div>
 
         </div>
-
-    </div>
-</section>
+    </section>
 @endsection
 
 {{-- Script xử lý gửi đánh giá bằng AJAX --}}
